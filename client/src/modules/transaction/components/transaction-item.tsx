@@ -18,13 +18,13 @@ function getTransactionProps(
   switch (transactionType) {
     case TransactionType.DEPOSIT:
       return {
-        label: "Entrada",
+        label: "Deposit",
         color: "success",
       };
 
     case TransactionType.WITHDRAW:
       return {
-        label: "Saída",
+        label: "Withdraw",
         color: "destructive",
       };
   }
@@ -48,7 +48,7 @@ export function TransactionItem({ transaction }: { transaction: Transaction }) {
             <p className="text-lg font-bold"> {label} </p>
             <p>
               <span className="text- font-normal">
-                {new Date(transaction.dateTime).toLocaleDateString("pt-BR", {
+                {new Date(transaction.dateTime).toLocaleDateString("en-US", {
                   hour: "2-digit",
                   minute: "2-digit",
                 })}

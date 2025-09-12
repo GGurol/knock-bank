@@ -30,13 +30,13 @@ export function BankStatmentCard() {
 
   return (
     <Card className="h-full p-0 gap-0 flex flex-col justify-between lg:row-span-2 lg:col-start-3">
-      <CardHeader className="text-2xl font-semibold p-6">Extrato</CardHeader>
+      <CardHeader className="text-2xl font-semibold p-6">Bank Statement</CardHeader>
       <CardContent className="overflow-auto max-h-176 pb-0 flex-1">
         {transactions.data.length != 0 ? (
           <TransactionList transactions={transactions.data} />
         ) : (
           <p className="text-gray-100 font-light">
-            Não há transações para visualizar.
+            There are no transactions to view.
           </p>
         )}
       </CardContent>

@@ -21,7 +21,7 @@ export default function DashboardLayout({
     const cleanSession = () => {
       Token.clean();
       router.push("/");
-      toast.error("Você não está logado, por favor entre com sua conta.");
+      toast.error("You are not logged in, please sign in with your account.");
     };
 
     if (!accessToken || session.status == "unauthenticated") {

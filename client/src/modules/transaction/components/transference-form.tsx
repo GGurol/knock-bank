@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -38,13 +37,13 @@ export function TransferenceForm() {
     >
       <DialogTrigger asChild>
         <Button className="w-full h-16 text-xl flex gap-4 hover:cursor-pointer">
-          Transferir
+          Transfer
           <ArrowsLeftRight size={32} />
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle> Transferir </DialogTitle>
+          <DialogTitle> Transfer </DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form
@@ -57,7 +56,7 @@ export function TransferenceForm() {
               name="money"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel> Valor </FormLabel>
+                  <FormLabel> Amount </FormLabel>
                   <FormControl>
                     <MoneyInput
                       value={field.value}
@@ -72,7 +71,7 @@ export function TransferenceForm() {
                     />
                   </FormControl>
                   <FormDescription>
-                    Valor que deseja transferir.
+                    Amount you wish to transfer.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -83,7 +82,7 @@ export function TransferenceForm() {
               name="accountId"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel> Conta Destino </FormLabel>
+                  <FormLabel> Destination Account </FormLabel>
                   <FormControl>
                     <AccountCombobox
                       accountId={field.value}
@@ -93,7 +92,7 @@ export function TransferenceForm() {
                     />
                   </FormControl>
                   <FormDescription>
-                    Pesquise pelo nome ou começo do cpf da conta.
+                    Search by the account holder's name or the start of their CPF.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -105,7 +104,7 @@ export function TransferenceForm() {
                 disabled={isPending}
                 className="w-full max-w-52 hover:cursor-pointer"
               >
-                Transferir
+                Transfer
                 {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               </Button>
             </DialogFooter>

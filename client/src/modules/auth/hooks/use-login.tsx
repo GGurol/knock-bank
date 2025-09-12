@@ -31,7 +31,7 @@ export function useLogin() {
       }
     },
     onSuccess: () => {
-      toast.success("Connectado com sucesso.");
+      toast.success("Successfully connected.");
       router.push("/dashboard");
     },
     onError: (error) => {

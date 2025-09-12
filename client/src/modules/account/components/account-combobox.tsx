@@ -38,7 +38,7 @@ export function AccountCombobox({
       <PopoverContent className="w-[462px]">
         <Command className="w-full" shouldFilter={false}>
           <CommandInput
-            placeholder="Pesquise uma conta..."
+            placeholder="Search for an account.."
             value={filters.search}
             onValueChange={(value) => setFilters({ search: value })}
           />

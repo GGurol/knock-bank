@@ -38,7 +38,7 @@ export function useTransference() {
         return;
       }
 
-      toast.error("Houve um error ao processar sua solicitação.");
+      toast.error("There was an error processing your request.");
     },
   });
 

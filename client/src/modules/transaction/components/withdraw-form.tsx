@@ -39,13 +39,13 @@ export function WithdrawForm() {
           className="w-full h-16 text-xl flex gap-4 hover:cursor-pointer"
           variant="destructive"
         >
-          Sacar
+          Withdraw
           <ArrowBendLeftDown size={32} />
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle> Sacar </DialogTitle>
+          <DialogTitle> Withdraw </DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form
@@ -58,7 +58,7 @@ export function WithdrawForm() {
               name="money"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel> Valor </FormLabel>
+                  <FormLabel> Amount </FormLabel>
                   <FormControl>
                     <MoneyInput
                       value={field.value}
@@ -72,7 +72,7 @@ export function WithdrawForm() {
                       }}
                     />
                   </FormControl>
-                  <FormDescription>Valor que deseja sacar.</FormDescription>
+                  <FormDescription>Amount you wish to withdraw.</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -84,7 +84,7 @@ export function WithdrawForm() {
                 disabled={isPending}
                 className="w-full max-w-52 hover:cursor-pointer"
               >
-                Sacar
+                Withdraw
                 {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               </Button>
             </DialogFooter>

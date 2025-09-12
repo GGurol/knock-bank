@@ -39,13 +39,13 @@ export function DepositForm() {
           className="w-full h-16 text-xl flex gap-4 hover:cursor-pointer"
           variant="success"
         >
-          Depositar
+          Deposit
           <ArrowBendRightUp size={32} />
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle> Depositar </DialogTitle>
+          <DialogTitle> Deposit </DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form
@@ -58,7 +58,7 @@ export function DepositForm() {
               name="money"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel> Valor </FormLabel>
+                  <FormLabel> Amount </FormLabel>
                   <FormControl>
                     <MoneyInput
                       value={field.value}
@@ -72,7 +72,7 @@ export function DepositForm() {
                       }}
                     />
                   </FormControl>
-                  <FormDescription>Valor que deseja depositar.</FormDescription>
+                  <FormDescription>Amount you wish to deposit.</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -84,7 +84,7 @@ export function DepositForm() {
                 disabled={isPending}
                 className="w-full max-w-52 hover:bg-success-hover hover:cursor-pointer"
               >
-                Depositar
+                Deposit
                 {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               </Button>
             </DialogFooter>

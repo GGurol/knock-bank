@@ -37,18 +37,18 @@ export const UpdateAccountSchema = z.object({
   name: z
     .string()
     .trim()
-    .min(4, "Seu nome deve conter pelo menos 4 caracteres."),
+    .min(4, "Your name must contain at least 4 characters."),
   birthDate: z
-    .string({ required_error: "A data de nascimento é obrigatória." })
+    .string({ required_error: "Birth date is required." })
     .refine((val) => /^\d{4}-\d{2}-\d{2}$/.test(val), {
-      message: "Data em um formato inválido. (YYYY-MM-DD)",
+      message: "Date in an invalid format. (YYYY-MM-DD)",
     }),
   accountType: z.number(),
   dailyWithdrawLimit: z.coerce
     .number()
     .refine(
       (value) => value >= 0,
-      "Você só pode transferir valores positivos."
+      "You can only transfer positive values."
     ),
 });
 
@@ -58,47 +58,47 @@ export const CreateAccountSchema = z.object({
   name: z
     .string()
     .trim()
-    .min(4, "Seu nome deve conter pelo menos 4 caracteres."),
+    .min(4, "Your name must contain at least 4 characters."),
   cpf: z
     .string()
     .trim()
     .refine((doc) => {
       const replacedDoc = doc.replace(/\D/g, "");
       return replacedDoc.length == 11;
-    }, "Seu CPF deve conter 11 caracteres.")
+    }, "Your CPF must contain 11 characters.")
     .refine((doc) => {
       const replacedDoc = doc.replace(/\D/g, "");
       return !!Number(replacedDoc);
-    }, "Seu CPF deve conter apenas números.")
-    .refine((cpfValue: string) => cpf.isValid(cpfValue), "Cpf inválido.")
+    }, "Your CPF must contain only numbers.")
+    .refine((cpfValue: string) => cpf.isValid(cpfValue), "Invalid CPF.")
     .transform((doc) => doc.replace(/\D/g, "")),
   birthDate: z
-    // .date({ required_error: "A data de nascimento é obrigatória." })
+    // .date({ required_error: "Birth date is required." })
     // .transform((date) => date.toISOString().split("T")[0]),
-    .string({ required_error: "A data de nascimento é obrigatória." })
+    .string({ required_error: "Birth date is required." })
     .refine((val) => /^\d{4}-\d{2}-\d{2}$/.test(val), {
-      message: "Data em um formato inválido. (YYYY-MM-DD)",
+      message: "Date in an invalid format. (YYYY-MM-DD)",
     }),
   accountType: z.number(),
   password: z
     .string()
     .trim()
-    .min(8, "Sua senha deve conter pelo menos 8 caracteres.")
+    .min(8, "Your password must contain at least 8 characters.")
     .refine(
       (senha: string) => /[a-z]/.test(senha),
-      "Sua senha deve conter pelo menos uma letra minúscula."
+      "Your password must contain at least one lowercase letter."
     )
     .refine(
       (senha: string) => /[A-Z]/.test(senha),
-      "Sua senha deve conter pelo menos uma letra maiúscula."
+      "Your password must contain at least one uppercase letter."
     )
     .refine(
       (senha: string) => /[0-9]/.test(senha),
-      "Sua senha deve conter pelo menos um numero."
+      "Your password must contain at least one number."
     )
     .refine(
       (senha: string) => /\W|_/.test(senha),
-      "Sua senha deve conter pelo menos um caractere especial."
+      "Your password must contain at least one special character."
     ),
 });
 

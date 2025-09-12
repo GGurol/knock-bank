@@ -21,7 +21,7 @@ export function useAccounts(accountId: number) {
   const buttonLabel =
     accounts && accountId
       ? accounts.data.find((account) => account.id == accountId)?.person.name
-      : "Selecione uma Conta";
+      : "Select an Account";
 
   return {
     accounts,

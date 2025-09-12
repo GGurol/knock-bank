@@ -42,14 +42,14 @@ export function CreateAccountForm() {
     <Dialog open={modal.isOpen} onOpenChange={modal.setIsOpen}>
       <DialogTrigger asChild>
         <Button className="text-xl py-8 px-10 rounded-2xl lg:max-w-60 hover:cursor-pointer">
-          Crie sua conta
+          Create your account
         </Button>
       </DialogTrigger>
       <DialogContent className="w-full max-w-sm rounded-lg lg:rounded-sm lg:max-w-xl">
         <DialogHeader>
-          <DialogTitle> Crie sua conta </DialogTitle>
+          <DialogTitle> Create your account </DialogTitle>
           <DialogDescription>
-            Preencha as informações abaixo para realizar o seu cadastro.
+            Fill in the information below to complete your registration.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -67,7 +67,7 @@ export function CreateAccountForm() {
                   <FormControl>
                     <Input placeholder="Davi Lucciola" {...field} />
                   </FormControl>
-                  <FormDescription>Insira seu nome completo</FormDescription>
+                  <FormDescription>Enter your full name</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -77,7 +77,7 @@ export function CreateAccountForm() {
               name="cpf"
               render={({ field: { onChange, ...props } }) => (
                 <FormItem>
-                  <FormLabel> Cpf </FormLabel>
+                  <FormLabel> Cpf (Taxpayer Registry Number)</FormLabel>
                   <FormControl>
                     <Input
                       placeholder="000.000.000-14"
@@ -90,7 +90,7 @@ export function CreateAccountForm() {
                     />
                   </FormControl>
                   <FormDescription>
-                    Seu cadastro de pessoa física (CPF)
+                    Your Individual Taxpayer Registry (CPF)
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -101,7 +101,7 @@ export function CreateAccountForm() {
               name="birthDate"
               render={({ field }) => (
                 <FormItem className="flex flex-col">
-                  <FormLabel>Data de Nascimento</FormLabel>
+                  <FormLabel>Date of Birth</FormLabel>
                   <FormControl>
                     <DatePicker
                       date={field.value}
@@ -115,7 +115,7 @@ export function CreateAccountForm() {
                     />
                   </FormControl>
                   <FormDescription>
-                    Sua data de nascimento é utilizada para calcular sua idade
+                    Your date of birth is used to calculate your age.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -126,11 +126,11 @@ export function CreateAccountForm() {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Senha</FormLabel>
+                  <FormLabel>Password</FormLabel>
                   <FormControl>
                     <Input type="password" placeholder="********" {...field} />
                   </FormControl>
-                  <FormDescription>Informe uma senha forte</FormDescription>
+                  <FormDescription>Enter a strong password</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -140,36 +140,36 @@ export function CreateAccountForm() {
               name="accountType"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel> Tipo de Conta </FormLabel>
+                  <FormLabel> Account Type </FormLabel>
                   <FormControl>
                     <Select
                       onValueChange={(value) => field.onChange(Number(value))}
                       defaultValue={`${field.value}`}
                     >
                       <SelectTrigger className="w-full focus:outline-primary">
-                        <SelectValue placeholder="Selecione o tipo de conta..." />
+                        <SelectValue placeholder="Select the account type…" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectGroup>
-                          <SelectLabel>Tipos de Contas</SelectLabel>
+                          <SelectLabel>Account Types </SelectLabel>
                           <SelectItem value={`${AccountType.CURRENT_ACCOUNT}`}>
-                            Conta Corrente
+                            Checking Account
                           </SelectItem>
                           <SelectItem value={`${AccountType.PAYMENT_ACCOUNT}`}>
-                            Conta Pagamento
+                            Payment Account
                           </SelectItem>
                           <SelectItem value={`${AccountType.SAVING_ACCOUNT}`}>
-                            Conta Poupança
+                            Savings Account
                           </SelectItem>
                           <SelectItem value={`${AccountType.SALARY_ACCOUNT}`}>
-                            Conta Salário
+                            Salary Account
                           </SelectItem>
                         </SelectGroup>
                       </SelectContent>
                     </Select>
                   </FormControl>
                   <FormDescription>
-                    Tipo de conta que deseja abrir
+                    Type of account you want to open
                   </FormDescription>
                   <FormMessage />
                 </FormItem>

@@ -18,11 +18,11 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 const chartConfig = {
   input: {
-    label: "Entrada",
+    label: "Inflow",
     color: "var(--color-success)",
   },
   output: {
-    label: "Saída",
+    label: "Outflow",
     color: "var(--color-destructive)",
   },
 } satisfies ChartConfig;
@@ -60,7 +60,7 @@ export function TransactionResumeCard() {
 
   return (
     <Card className="w-full flex flex-col gap-0 pb-3 justify-between row-start-3 lg:row-start-2 lg:col-span-2">
-      <CardHeader className="text-2xl font-semibold">Resumo</CardHeader>
+      <CardHeader className="text-2xl font-semibold">Summary</CardHeader>
       <CardContent className="relative h-full lg:max-h-80">
         <ChartContainer config={chartConfig} className="h-full w-full">
           <BarChart accessibilityLayer data={chartData}>

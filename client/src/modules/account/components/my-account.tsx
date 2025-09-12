@@ -68,7 +68,7 @@ export function MyAccount() {
       </DialogTrigger>
       <DialogContent className="w-full max-w-sm rounded-lg lg:rounded-sm lg:max-w-xl">
         <DialogHeader>
-          <DialogTitle> Minha Conta </DialogTitle>
+          <DialogTitle> My Account </DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form
@@ -81,7 +81,7 @@ export function MyAccount() {
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Nome</FormLabel>
+                  <FormLabel>Name</FormLabel>
                   <FormControl>
                     <Input
                       placeholder="Davi Lucciola"
@@ -98,7 +98,7 @@ export function MyAccount() {
               name="birthDate"
               render={({ field }) => (
                 <FormItem className="flex flex-col">
-                  <FormLabel>Data de Nascimento</FormLabel>
+                  <FormLabel>Date of Birth</FormLabel>
                   <FormControl>
                     <DatePicker
                       date={field.value}
@@ -118,7 +118,7 @@ export function MyAccount() {
               name="accountType"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel> Tipo de Conta </FormLabel>
+                  <FormLabel> Account Type </FormLabel>
                   <FormControl>
                     <Select
                       disabled={!editMode}
@@ -126,22 +126,22 @@ export function MyAccount() {
                       onValueChange={(value) => field.onChange(Number(value))}
                     >
                       <SelectTrigger className="w-full focus:outline-primary">
-                        <SelectValue placeholder="Selecione o tipo de conta..." />
+                        <SelectValue placeholder="Select Account Type.." />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectGroup>
                           <SelectLabel>Tipos de Contas</SelectLabel>
                           <SelectItem value={`${AccountType.CURRENT_ACCOUNT}`}>
-                            Conta Corrente
+                            Checking Account
                           </SelectItem>
                           <SelectItem value={`${AccountType.PAYMENT_ACCOUNT}`}>
-                            Conta Pagamento
+                            Payment Account
                           </SelectItem>
                           <SelectItem value={`${AccountType.SAVING_ACCOUNT}`}>
-                            Conta Poupança
+                            Savings Account
                           </SelectItem>
                           <SelectItem value={`${AccountType.SALARY_ACCOUNT}`}>
-                            Conta Salário
+                            Salary Account
                           </SelectItem>
                         </SelectGroup>
                       </SelectContent>
@@ -156,7 +156,7 @@ export function MyAccount() {
               name="dailyWithdrawLimit"
               render={({ field }) => (
                 <FormItem className="flex flex-col">
-                  <FormLabel>Limite de Saque Diário</FormLabel>
+                  <FormLabel>Daily Withdrawal Limit</FormLabel>
                   <FormControl>
                     <MoneyInput
                       disabled={!editMode}
@@ -212,7 +212,7 @@ export function MyAccount() {
                     className="flex gap-2"
                     onClick={(e) => (e.preventDefault(), toggleEditMode())}
                   >
-                    Editar
+                    Edit
                     <Pencil size={24} className="fill-white" />
                   </Button>
                 </>

@@ -48,7 +48,7 @@ export const nextAuthOptions: NextAuthOptions = {
             throw error;
           }
 
-          throw new Error("Houve um error inesperado.");
+          throw new Error("An unexpected error occurred.");
         }
       },
     }),

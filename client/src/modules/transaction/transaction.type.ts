@@ -29,16 +29,16 @@ export type TransactionQuery = PaginationQuery & {
 
 export const BasicTransferenceSchema = z.object({
   money: z
-    .number({ required_error: "O valor não pode ser igual a 0." })
-    .refine((value) => value != 0, "O valor não pode ser igual a 0.")
-    .refine((value) => value > 0, "Você só pode transferir valores positivos."),
+    .number({ required_error: "The amount cannot be 0." })
+    .refine((value) => value != 0, "The amount cannot be 0.")
+    .refine((value) => value > 0, "You can only transfer positive amounts."),
 });
 
 export type BasicTransferencePayload = z.infer<typeof BasicTransferenceSchema>;
 
 export const TransferenceSchema = BasicTransferenceSchema.extend({
   accountId: z
-    .number({ required_error: "É obrigatório selecionar uma conta." })
+    .number({ required_error: "Selecting an account is required." })
     .positive(),
 });
 

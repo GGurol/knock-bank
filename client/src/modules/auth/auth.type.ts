@@ -8,12 +8,12 @@ export const LoginUserSchema = z.object({
     .refine((doc) => {
       const replacedDoc = doc.replace(/\D/g, "");
       return replacedDoc.length == 11;
-    }, "Seu CPF deve conter 11 caracteres.")
+    }, "Your CPF must contain 11 characters.")
     .refine((doc) => {
       const replacedDoc = doc.replace(/\D/g, "");
       return !!Number(replacedDoc);
-    }, "Seu CPF deve conter apenas números.")
-    .refine((cpfValue: string) => cpf.isValid(cpfValue), "Cpf inválido.")
+    }, "Your CPF must only contain numbers.")
+    .refine((cpfValue: string) => cpf.isValid(cpfValue), "Invalid CPF.")
     .transform((doc) => doc.replace(/\D/g, "")),
   password: z.string().trim(),
 });

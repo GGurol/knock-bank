@@ -36,7 +36,7 @@ export function LoginForm() {
             duration-300
             hover:bg-primary hover:text-white hover:cursor-pointer"
         >
-          Fazer Login
+          Log In
         </button>
       </DialogTrigger>
       <DialogContent className="w-full max-w-sm rounded-lg lg:rounded-sm lg:max-w-xl gap-8">
@@ -54,7 +54,7 @@ export function LoginForm() {
               name="cpf"
               render={({ field: { onChange, ...props } }) => (
                 <FormItem>
-                  <FormLabel>Cpf</FormLabel>
+                  <FormLabel>CPF</FormLabel>
                   <FormControl>
                     <Input
                       placeholder="000.000.000-14"
@@ -67,7 +67,7 @@ export function LoginForm() {
                     />
                   </FormControl>
                   <FormDescription>
-                    Digite o seu cpf onde sua conta está cadastrada.
+                    Enter the CPF where your account is registered.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -78,11 +78,11 @@ export function LoginForm() {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Senha</FormLabel>
+                  <FormLabel>Password</FormLabel>
                   <FormControl>
                     <Input type="password" placeholder="********" {...field} />
                   </FormControl>
-                  <FormDescription>Insira sua senha.</FormDescription>
+                  <FormDescription>Enter your password.</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -93,7 +93,7 @@ export function LoginForm() {
                 className="w-full max-w-52"
                 disabled={isPending}
               >
-                Entrar{" "}
+                Sign In{" "}
                 {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               </Button>
             </DialogFooter>
