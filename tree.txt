@@ -1,0 +1,203 @@
+.
+├── client
+│   ├── components.json
+│   ├── Dockerfile
+│   ├── eslint.config.mjs
+│   ├── next.config.ts
+│   ├── package.json
+│   ├── postcss.config.mjs
+│   ├── public
+│   │   ├── file.svg
+│   │   ├── globe.svg
+│   │   ├── knockbank-logo.svg
+│   │   ├── next.svg
+│   │   ├── vercel.svg
+│   │   └── window.svg
+│   ├── src
+│   │   ├── app
+│   │   │   ├── api
+│   │   │   │   └── auth
+│   │   │   │       └── [...nextauth]
+│   │   │   │           ├── options.ts
+│   │   │   │           └── route.ts
+│   │   │   ├── dashboard
+│   │   │   │   ├── components
+│   │   │   │   │   ├── content.tsx
+│   │   │   │   │   ├── header.tsx
+│   │   │   │   │   └── menu.tsx
+│   │   │   │   ├── layout.tsx
+│   │   │   │   └── page.tsx
+│   │   │   ├── globals.css
+│   │   │   ├── icon.svg
+│   │   │   ├── layout.tsx
+│   │   │   ├── not-found.tsx
+│   │   │   └── page.tsx
+│   │   ├── components
+│   │   │   ├── date-picker.tsx
+│   │   │   ├── hiddeble.tsx
+│   │   │   ├── knock-bank-logo.tsx
+│   │   │   ├── money-input.tsx
+│   │   │   └── ui
+│   │   │       ├── button.tsx
+│   │   │       ├── calendar.tsx
+│   │   │       ├── card.tsx
+│   │   │       ├── chart.tsx
+│   │   │       ├── command.tsx
+│   │   │       ├── dialog.tsx
+│   │   │       ├── form.tsx
+│   │   │       ├── input.tsx
+│   │   │       ├── label.tsx
+│   │   │       ├── pagination.tsx
+│   │   │       ├── popover.tsx
+│   │   │       ├── progress.tsx
+│   │   │       ├── select.tsx
+│   │   │       ├── skeleton.tsx
+│   │   │       └── sonner.tsx
+│   │   ├── lib
+│   │   │   ├── api.ts
+│   │   │   ├── masks.ts
+│   │   │   ├── pagination.ts
+│   │   │   ├── token.ts
+│   │   │   └── utils.ts
+│   │   ├── modules
+│   │   │   ├── account
+│   │   │   │   ├── account.service.ts
+│   │   │   │   ├── account.type.ts
+│   │   │   │   ├── components
+│   │   │   │   │   ├── account-combobox.tsx
+│   │   │   │   │   ├── balance-card.tsx
+│   │   │   │   │   ├── balance-visibility-toggle.tsx
+│   │   │   │   │   ├── create-account-form.tsx
+│   │   │   │   │   ├── daily-withdraw-progress.tsx
+│   │   │   │   │   └── my-account.tsx
+│   │   │   │   ├── contexts
+│   │   │   │   │   └── account-context.tsx
+│   │   │   │   └── hooks
+│   │   │   │       ├── use-accounts.tsx
+│   │   │   │       ├── use-block-account.tsx
+│   │   │   │       ├── use-create-account.tsx
+│   │   │   │       └── use-update-account.tsx
+│   │   │   ├── auth
+│   │   │   │   ├── auth.service.ts
+│   │   │   │   ├── auth.type.ts
+│   │   │   │   ├── components
+│   │   │   │   │   ├── login-form.tsx
+│   │   │   │   │   └── logout-button.tsx
+│   │   │   │   └── hooks
+│   │   │   │       ├── use-login.tsx
+│   │   │   │       └── use-logout.tsx
+│   │   │   └── transaction
+│   │   │       ├── components
+│   │   │       │   ├── bank-statment-card.tsx
+│   │   │       │   ├── deposit-form.tsx
+│   │   │       │   ├── transaction-item.tsx
+│   │   │       │   ├── transaction-list.tsx
+│   │   │       │   ├── transaction-resume-card.tsx
+│   │   │       │   ├── transference-form.tsx
+│   │   │       │   └── withdraw-form.tsx
+│   │   │       ├── hooks
+│   │   │       │   ├── use-deposit.tsx
+│   │   │       │   ├── use-transactions.tsx
+│   │   │       │   ├── use-transference.tsx
+│   │   │       │   └── use-withdraw.tsx
+│   │   │       ├── transaction.service.ts
+│   │   │       └── transaction.type.ts
+│   │   ├── providers
+│   │   │   ├── query.provider.tsx
+│   │   │   ├── service.provider.tsx
+│   │   │   ├── session.provider.tsx
+│   │   │   └── theme.provider.tsx
+│   │   └── @types
+│   │       └── next-auth.d.ts
+│   ├── tsconfig.json
+│   └── yarn.lock
+├── docker-compose.yml
+├── README.md
+├── server
+│   ├── Dockerfile
+│   ├── Makefile
+│   ├── pyproject.toml
+│   ├── src
+│   │   ├── alembic.ini
+│   │   ├── app
+│   │   │   ├── account
+│   │   │   │   ├── enums.py
+│   │   │   │   ├── exceptions.py
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── models.py
+│   │   │   │   ├── repository.py
+│   │   │   │   ├── router.py
+│   │   │   │   ├── schemas.py
+│   │   │   │   └── service.py
+│   │   │   ├── auth
+│   │   │   │   ├── exceptions.py
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── models.py
+│   │   │   │   ├── repository.py
+│   │   │   │   ├── router.py
+│   │   │   │   ├── schemas.py
+│   │   │   │   └── service.py
+│   │   │   ├── __init__.py
+│   │   │   ├── models.py
+│   │   │   ├── routes.py
+│   │   │   └── transaction
+│   │   │       ├── enums.py
+│   │   │       ├── exceptions.py
+│   │   │       ├── __init__.py
+│   │   │       ├── models.py
+│   │   │       ├── repository.py
+│   │   │       ├── resumes.py
+│   │   │       ├── router.py
+│   │   │       ├── schemas.py
+│   │   │       └── service.py
+│   │   ├── core
+│   │   │   ├── config.py
+│   │   │   ├── db.py
+│   │   │   ├── __init__.py
+│   │   │   ├── log.py
+│   │   │   └── security.py
+│   │   ├── main.py
+│   │   ├── migrations
+│   │   │   ├── env.py
+│   │   │   ├── README
+│   │   │   ├── script.py.mako
+│   │   │   └── versions
+│   │   │       ├── 11ba600c4d43_renaming_transction_reciver_id_origin_.py
+│   │   │       ├── 796cbec9b5ac_check_constraint_added.py
+│   │   │       ├── ce25e53603f8_rename_transaction_value_to_money.py
+│   │   │       ├── d8e65d29c60b_origin_account_can_be_null.py
+│   │   │       └── ecc7085c20b2_creating_tables_in_english.py
+│   │   ├── tests
+│   │   │   ├── conftest.py
+│   │   │   ├── e2e
+│   │   │   │   ├── account
+│   │   │   │   │   ├── __init__.py
+│   │   │   │   │   ├── test_create_account.py
+│   │   │   │   │   ├── test_get_account.py
+│   │   │   │   │   └── test_update_account.py
+│   │   │   │   ├── auth
+│   │   │   │   │   ├── __init__.py
+│   │   │   │   │   ├── test_login.py
+│   │   │   │   │   └── test_logout.py
+│   │   │   │   └── transaction
+│   │   │   │       ├── __init__.py
+│   │   │   │       ├── test_deposit_transaction.py
+│   │   │   │       ├── test_get_transaction.py
+│   │   │   │       ├── test_transfer_transaction.py
+│   │   │   │       └── test_withdraw_transaction.py
+│   │   │   ├── __init__.py
+│   │   │   ├── mocks
+│   │   │   │   ├── account.py
+│   │   │   │   ├── __init__.py
+│   │   │   │   └── transaction.py
+│   │   │   └── test_app.py
+│   │   └── utils
+│   │       ├── crypt.py
+│   │       ├── __init__.py
+│   │       ├── schemas.py
+│   │       ├── token.py
+│   │       └── validators.py
+│   └── uv.lock
+└── tree.txt
+
+42 directories, 159 files

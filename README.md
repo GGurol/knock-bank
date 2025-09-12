@@ -33,29 +33,32 @@ KnockBank is a modern full stack banking platform that allows its users to depos
 
 <pre>
 
-```
 knock-bank
 ├── client/                # NextJS App
-│   ├── src/           
+│   ├── src/
+
 │   │   ├── app/           # App Routing
 │   │   ├── components/    # Global Components
 │   │   ├── lib/           # Lib Modules
 │   │   └── modules/       # App modules separated by domain
-│   └── .env.exemple       # Env Variables Exemple
+│   └── .env.example       # Env Variables Example
 │
 ├── server/                # FastAPI APP
-│   ├── src/           
+│   ├── src/
+
 │   │   ├── app/           # App Modules
 │   │   ├── core/          # Global Configurations
 │   │   ├── migrations/    # Database Migrations
 │   │   ├── tests/         # Automated Tests
 │   │   └── utils/         # Utilities Module
-│   └── .env.exemple       # Env Variables Exemple
+│   └── .env.example       # Env Variables Example
 │
 ├── .github/               # CI Config
-├── docker-compose.yml			
+├── docker-compose.yml
+
 └── README.md
-```
+
+
 </pre>
 
 ⸻
@@ -103,9 +106,9 @@ knock-bank
 ## 🚀 Getting Started
 
 ### 📦 Requirements
-	• Python 3.12+
-	• Node.js 20+
-	• Docker & Docker Compose
+    • Python 3.12+
+    • Node.js 20+
+    • Docker & Docker Compose
 
 ⸻
 
@@ -117,7 +120,7 @@ knock-bank
 
 Access the frontend at http://localhost:3000.
 
-You also can access the backend API docs at http://localhost:8000/api/docs.
+You can also access the backend API docs at http://localhost:8000/api/docs.
 
 ⸻
 
