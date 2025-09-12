@@ -79,7 +79,7 @@ export function DatePicker({
           {dateToDisplay ? (
             format(dateToDisplay, "dd/MM/yyyy")
           ) : (
-            <span>Escolha uma Data</span>
+            <span>Choose a Date</span>
           )}
         </Button>
       </PopoverTrigger>

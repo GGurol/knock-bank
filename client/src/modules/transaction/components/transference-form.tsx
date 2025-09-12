@@ -20,7 +20,7 @@ import {
 import { ArrowsLeftRight } from "@phosphor-icons/react/dist/ssr";
 import { MoneyInput } from "@/components/money-input";
 import { AccountCombobox } from "@/modules/account/components/account-combobox";
-
+import { Button } from '@/components/ui/button';
 import { Loader2 } from "lucide-react";
 import { useTransference } from "../hooks/use-transference";
 

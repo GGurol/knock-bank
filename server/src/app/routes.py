@@ -29,7 +29,7 @@ def add_exception_handlers(app: FastAPI):
     def generic_exception_handler(request: Request, exc: Exception):
         logger.error(exc)
         content = MessageResponse(
-            message='Houve um error ao processar sua solicitação.'
+            message='There was an error processing your request.'
         )
         return JSONResponse(
             content.model_dump(mode='json'),

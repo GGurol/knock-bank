@@ -63,7 +63,7 @@ export function CreateAccountForm() {
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Nome</FormLabel>
+                  <FormLabel>Name</FormLabel>
                   <FormControl>
                     <Input placeholder="Davi Lucciola" {...field} />
                   </FormControl>
@@ -181,7 +181,7 @@ export function CreateAccountForm() {
                 disabled={isPending}
                 className="w-full max-w-52 hover:cursor-pointer"
               >
-                Cadastrar{" "}
+                Register{" "}
                 {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               </Button>
             </DialogFooter>
