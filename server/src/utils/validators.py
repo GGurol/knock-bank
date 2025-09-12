@@ -4,12 +4,12 @@ from string import ascii_lowercase, ascii_uppercase, digits, punctuation
 
 def validate_cpf(value: str) -> None:
     if CPF().validate(value) is False:
-        raise ValueError('Cpf Inválido.')
+        raise ValueError('Invalid CPF.')
 
 
 def validate_password(value: str) -> None:
     if len(value) < 8:
-        raise ValueError('A senha deve conter no minímo 8 caracteres.')
+        raise ValueError('The password must contain at least 8 characters.')
 
     have_lower = have_upper = have_digits = have_special = False
     for char in value:
@@ -30,13 +30,13 @@ def validate_password(value: str) -> None:
 
     else:
         if have_lower is False:
-            raise ValueError('A senha deve conter letras minúsculas.')
+            raise ValueError('The password must contain lowercase letters.')
 
         if have_upper is False:
-            raise ValueError('A senha deve conter letras maiúsculas.')
+            raise ValueError('The password must contain uppercase letters.')
 
         if have_digits is False:
-            raise ValueError('A senha deve conter numeros.')
+            raise ValueError('The password must contain numbers.')
 
         if have_special is False:
-            raise ValueError('A senha deve conter caracteres especiais.')
+            raise ValueError('The password must contain special characters.')
