@@ -1,21 +1,15 @@
 import { z } from "zod";
-import { cpf } from "cpf-cnpj-validator";
+// The cpf validator is no longer needed for login
+// import { cpf } from "cpf-cnpj-validator";
 
 export const LoginUserSchema = z.object({
+  // --- CPF VALIDATION SIMPLIFIED FOR LOGIN ---
   cpf: z
     .string()
     .trim()
-    .refine((doc) => {
-      const replacedDoc = doc.replace(/\D/g, "");
-      return replacedDoc.length == 11;
-    }, "Your CPF must contain 11 characters.")
-    .refine((doc) => {
-      const replacedDoc = doc.replace(/\D/g, "");
-      return !!Number(replacedDoc);
-    }, "Your CPF must only contain numbers.")
-    .refine((cpfValue: string) => cpf.isValid(cpfValue), "Invalid CPF.")
-    .transform((doc) => doc.replace(/\D/g, "")),
-  password: z.string().trim(),
+    .min(1, "CPF is required."), // Basic check to ensure it's not empty
+  
+  password: z.string().trim().min(1, "Password is required."),
 });
 
 export type LoginUserPayload = z.infer<typeof LoginUserSchema>;

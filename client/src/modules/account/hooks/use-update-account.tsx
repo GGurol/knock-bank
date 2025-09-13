@@ -28,7 +28,7 @@ export function useUpdateAccount(account?: Account) {
     if (account) {
       form.setValue("name", account.person.name);
       form.setValue("birthDate", account.person.birthDate!);
-      form.setValue("accountType", account.accountType);
+      form.setValue("accountType", String(account.accountType));
       form.setValue("dailyWithdrawLimit", account.dailyWithdrawLimit);
     }
   }, [account, form]);

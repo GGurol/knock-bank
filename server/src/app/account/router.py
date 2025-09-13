@@ -16,7 +16,7 @@ def get_auth_account(
     user: User = Depends(get_current_user),
     transaction_repository: TransactionRepository = Depends(TransactionRepository),
 ) -> AccountMeOut:
-    """Endpoint para buscar os dados da conta logada."""
+    """Endpoint to fetch the logged-in account data."""
     account: Account = user.account
     today_withdraw = transaction_repository.get_total_today_withdraw(account.id)
 
@@ -33,8 +33,8 @@ def get_all(
     account_service: AccountService = Depends(AccountService),
 ) -> PaginationResponse[AccountOut]:
     """
-    Endpoint para buscar contas cadastradas.\n
-    Não trás a propria conta que está consultando.
+    Endpoint to fetch registered accounts.\n
+    Does not return the account making the request.
     """
     return account_service.get_all(filter, user.account.id)
 
@@ -43,11 +43,11 @@ def get_all(
 def create_account(
     account_in: AccountIn, account_service: AccountService = Depends(AccountService)
 ):
-    """Endpoint para cadastrar uma nova conta."""
+    """Endpoint to register a new account."""
     account = account_service.create(account_in)
 
     return {
-        'message': 'Conta cadastrada com sucesso.',
+        'message': 'Account successfully created.',
         'detail': {'created_id': account.id},
     }
 
@@ -60,14 +60,14 @@ def update_account(
     account_service: AccountService = Depends(AccountService),
 ):
     """
-    Endpoint para atualizar uma conta.\n
-    Algumas informações não podem ser atualizadas, como por exemplo o CPF.\n
-    Somente o dono da conta pode atualizar as informações.
+    Endpoint to update an account.\n
+    Some information cannot be updated, such as the CPF.\n
+    Only the account owner can update the information.
     """
     account_service.update(id, update_account_in, user.id)
 
     return {
-        'message': 'Conta atualizada com sucesso.',
+        'message': 'Account successfully updated.',
     }
 
 
@@ -78,11 +78,11 @@ def deactivate_account(
     account_service: AccountService = Depends(AccountService),
 ):
     """
-    Endpoint para desativar uma conta.\n
-    Somente o dono da conta pode desativar.
+    Endpoint to deactivate an account.\n
+    Only the account owner can deactivate it.
     """
     account_service.deactivate(id, user.id)
 
     return {
-        'message': 'Conta bloqueada com sucesso.',
+        'message': 'Account successfully deactivated.',
     }

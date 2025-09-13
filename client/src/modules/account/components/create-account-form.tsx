@@ -65,7 +65,7 @@ export function CreateAccountForm() {
                 <FormItem>
                   <FormLabel>Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="Davi Lucciola" {...field} />
+                    <Input placeholder="Your Name" {...field} />
                   </FormControl>
                   <FormDescription>Enter your full name</FormDescription>
                   <FormMessage />
@@ -143,8 +143,8 @@ export function CreateAccountForm() {
                   <FormLabel> Account Type </FormLabel>
                   <FormControl>
                     <Select
-                      onValueChange={(value) => field.onChange(Number(value))}
-                      defaultValue={`${field.value}`}
+                      onValueChange={field.onChange}
+                      defaultValue={String(field.value)}
                     >
                       <SelectTrigger className="w-full focus:outline-primary">
                         <SelectValue placeholder="Select the account type…" />

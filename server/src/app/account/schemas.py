@@ -1,7 +1,8 @@
 from datetime import date
+from pydantic import BaseModel, Field, field_validator
 from utils import validators
 from utils.schemas import PaginationQuery
-from pydantic import BaseModel, Field, field_validator
+from app.auth.enums import AccountType
 
 
 class PersonBasicOut(BaseModel):
@@ -17,7 +18,8 @@ class PersonOut(PersonBasicOut):
 class UpdateAccountIn(BaseModel):
     name: str
     birthDate: date
-    accountType: int = Field(ge=1, le=2)
+    # CORRECTED: Changed from int to the AccountType Enum for consistency
+    accountType: AccountType
     dailyWithdrawLimit: float = Field(gt=0)
 
 
@@ -30,12 +32,13 @@ class AccountIn(BaseModel):
     cpf: str
     password: str
     birthDate: date
-    accountType: int = Field(ge=1, le=4)
+    accountType: AccountType
     dailyWithdrawLimit: float = Field(gt=0, default=999)
 
     @field_validator('cpf')
     @classmethod
     def cpf_field_validator(cls, value: str) -> str:
+        # This validation is currently disabled in your validators.py
         validators.validate_cpf(value)
         return value
 
@@ -57,6 +60,7 @@ class AccountMeOut(BaseModel):
     person: PersonOut
     balance: float
     flActive: bool
-    accountType: int
+    # CORRECTED: Changed from int to the AccountType Enum
+    accountType: AccountType
     dailyWithdrawLimit: float
     todayWithdraw: float

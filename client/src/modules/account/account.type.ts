@@ -11,10 +11,10 @@ export type Person = {
 };
 
 export enum AccountType {
-  CURRENT_ACCOUNT = 1,
-  SAVING_ACCOUNT = 2,
-  SALARY_ACCOUNT = 3,
-  PAYMENT_ACCOUNT = 4,
+  CURRENT_ACCOUNT = "CURRENT_ACCOUNT",
+  SAVING_ACCOUNT = "SAVING_ACCOUNT",
+  SALARY_ACCOUNT = "SALARY_ACCOUNT",
+  PAYMENT_ACCOUNT = "PAYMENT_ACCOUNT",
 }
 
 export type BaseAccount = {
@@ -44,7 +44,9 @@ export const UpdateAccountSchema = z.object({
     .refine((val) => /^\d{4}-\d{2}-\d{2}$/.test(val), {
       message: "Date in an invalid format. (YYYY--MM-DD)",
     }),
-  accountType: z.number(),
+  accountType: z.string({
+    required_error: "Please select an account type.",
+  }),  
   dailyWithdrawLimit: z.coerce
     .number()
     .refine(
@@ -70,7 +72,9 @@ export const CreateAccountSchema = z.object({
     .refine((val) => /^\d{4}-\d{2}-\d{2}$/.test(val), {
       message: "Date in an invalid format. (YYYY-MM-DD)",
     }),
-  accountType: z.number(),
+  accountType: z.string({
+    required_error: "Please select an account type.",
+  }),
   password: z
     .string()
     .trim()

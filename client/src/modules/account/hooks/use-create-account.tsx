@@ -1,6 +1,7 @@
 import {
   CreateAccountPayload,
   CreateAccountSchema,
+  AccountType, // <-- 1. Import the AccountType enum
 } from "@/modules/account/account.type";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -23,7 +24,7 @@ export function useCreateAccount() {
       cpf: "",
       birthDate: "",
       password: "",
-      accountType: 1,
+      accountType: AccountType.CURRENT_ACCOUNT,
     },
   });
 
