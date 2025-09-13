@@ -6,24 +6,32 @@ from app.account.models import Account
 from app.account.service import AccountService
 from app.transaction.repository import TransactionRepository
 from utils.schemas import PaginationResponse
-
+from app.account.schemas import AccountMeOut # Ensure this is imported
 
 account_router = APIRouter(tags=['Account'], prefix='/api/account')
 
 
-@account_router.get('/me')
+@account_router.get('/me', response_model=AccountMeOut) # Add response_model
 def get_auth_account(
     user: User = Depends(get_current_user),
     transaction_repository: TransactionRepository = Depends(TransactionRepository),
 ) -> AccountMeOut:
-    """Endpoint to fetch the logged-in account data."""
-    account: Account = user.account
+    """Endpoint to fetch the logged-in user's account data."""
+    account: Account = user.person.account
     today_withdraw = transaction_repository.get_total_today_withdraw(account.id)
 
-    account_json = account.to_json()
-    account_json.update({'todayWithdraw': float(-(today_withdraw))})
+    # CORRECTED: Instead of a manual .to_json(), we will return the Pydantic model
+    # FastAPI will handle the conversion automatically.
+    return AccountMeOut(
+        id=account.id,
+        person=account.person,
+        balance=account.balance,
+        flActive=account.flActive,
+        accountType=account.accountType,
+        dailyWithdrawLimit=account.dailyWithdrawLimit,
+        todayWithdraw=float(-(today_withdraw))
+    )
 
-    return AccountMeOut(**account_json)
 
 
 @account_router.get('/')
@@ -33,10 +41,11 @@ def get_all(
     account_service: AccountService = Depends(AccountService),
 ) -> PaginationResponse[AccountOut]:
     """
-    Endpoint to fetch registered accounts.\n
-    Does not return the account making the request.
+    Endpoint to search for registered accounts.
+    Does not include the querying user's own account.
     """
-    return account_service.get_all(filter, user.account.id)
+    # CORRECTED: The path to the account ID is through user.person
+    return account_service.get_all(filter, user.person.account.id)
 
 
 @account_router.post('/', status_code=status.HTTP_201_CREATED)
@@ -47,7 +56,7 @@ def create_account(
     account = account_service.create(account_in)
 
     return {
-        'message': 'Account successfully created.',
+        'message': 'Account registered successfully.',
         'detail': {'created_id': account.id},
     }
 
@@ -60,14 +69,14 @@ def update_account(
     account_service: AccountService = Depends(AccountService),
 ):
     """
-    Endpoint to update an account.\n
-    Some information cannot be updated, such as the CPF.\n
+    Endpoint to update an account.
+    Some information, like the CPF, cannot be updated.
     Only the account owner can update the information.
     """
     account_service.update(id, update_account_in, user.id)
 
     return {
-        'message': 'Account successfully updated.',
+        'message': 'Account updated successfully.',
     }
 
 
@@ -78,11 +87,12 @@ def deactivate_account(
     account_service: AccountService = Depends(AccountService),
 ):
     """
-    Endpoint to deactivate an account.\n
-    Only the account owner can deactivate it.
+    Endpoint to deactivate an account.
+    Only the account owner can perform this action.
     """
-    account_service.deactivate(id, user.id)
+    # CORRECTED: The path to the account ID is through user.person
+    account_service.deactivate(id, user.person.account.id)
 
     return {
-        'message': 'Account successfully deactivated.',
+        'message': 'Account blocked successfully.',
     }

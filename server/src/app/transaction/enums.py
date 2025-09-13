@@ -2,8 +2,8 @@ from enum import Enum
 
 
 class TransactionType(Enum):
-    DEPOSIT = (1, 'Depósito')
-    WITHDRAW = (2, 'Saque')
+    DEPOSIT = (1, 'Deposit')
+    WITHDRAW = (2, 'Withdraw')
 
     @classmethod
     def get_transaction_type(cls, transaction_type_id: int):
@@ -11,4 +11,4 @@ class TransactionType(Enum):
             if transaction_type.value[0] == transaction_type_id:
                 return transaction_type
 
-        raise ValueError('Tipo de Transação Inválida.')
+        raise ValueError('Invalid Transaction Type')
