@@ -101,7 +101,7 @@ export class Api {
         case HttpStatus.InternalServerError:
           throw new ApiInternalServerError(data?.message, data?.detail);
         default:
-          throw new ApiError("Ocorreu um erro inesperado.", undefined);
+          throw new ApiError("An unexpected error occurred.", undefined);
       }
     }
   }
