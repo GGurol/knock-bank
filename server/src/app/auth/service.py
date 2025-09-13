@@ -7,7 +7,6 @@ from app.auth.schemas import TokenIn
 from app.auth.repository import UserRepository
 from app.account.repository import AccountRepository
 
-
 @dataclass
 class AuthService:
     user_repository: UserRepository = Depends(UserRepository)
@@ -16,24 +15,27 @@ class AuthService:
     def login(self, token_in: TokenIn) -> str:
         account = self.account_repository.get_by_cpf(token_in.cpf)
 
-        invalid_credentials = (
-            account is None
-            or account.user.verify_password_hash(token_in.password) is False
-        )
-
-        if invalid_credentials:
+        # CORRECTED: The path to the password check is now account.person.user
+        # We also now use the verify_password utility for better separation of concerns.
+        if (
+            account is None or
+            account.person is None or
+            account.person.user is None or
+            not security.verify_password(token_in.password, account.person.user.password)
+        ):
             raise InvalidCredentials()
 
-        if account is not None and account.fl_active is False:
+        if not account.flActive:
             raise CantLoginInBlockedAccount()
 
-        token: str = security.create_token(account.user_id)
+        # The token should be created for the user ID
+        token: str = security.create_token(account.person.user.id)
 
-        account.user.token = token
-        self.account_repository.save(account)
+        account.person.user.token = token
+        self.user_repository.save(account.person.user) # Save the user object, not the account
 
         return token
 
     def logout(self, user: User) -> None:
-        user.token, user.refresh_token = None, None
+        user.token = None
         self.user_repository.save(user)
