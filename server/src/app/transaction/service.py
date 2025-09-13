@@ -33,7 +33,7 @@ class TransactionService:
     ) -> PaginationResponse[TransactionOut]:
         transactions, total = self.transaction_repository.get_all(filter, account_id)
         transactions = [
-            TransactionOut(**transaction.to_json()) for transaction in transactions
+            TransactionOut.model_validate(transaction) for transaction in transactions
         ]
 
         return PaginationResponse(
@@ -49,75 +49,74 @@ class TransactionService:
 
     def get_by_id(self, transaction_id: int) -> Transaction:
         transaction = self.transaction_repository.get_by_id(transaction_id)
-
         if transaction is None:
             raise TransactionNotFound()
-
         return transaction
 
     def withdraw(self, transaction_in: TransactionIn):
         account: Account = self.account_repository.get_by_id(transaction_in.accountId)
-
-        money: Decimal = Decimal(transaction_in.money)
-        if account.balance - money < 0:
+        money = Decimal(transaction_in.money)
+        
+        # CORRECTED: Convert balance to Decimal before comparison
+        if Decimal(str(account.balance)) - money < 0:
             raise InsuficientBalance()
 
         self.validate_daily_withdraw_limit(account, money)
-        account.balance -= money
+        # CORRECTED: Perform calculation using Decimal
+        account.balance = Decimal(str(account.balance)) - money
 
-        transaction = Transaction(-money, TransactionType.WITHDRAW, account)
+        transaction = Transaction(Decimal(-money), TransactionType.WITHDRAW, account)
         self.transaction_repository.save(transaction)
 
     def deposit(self, transaction_in: TransactionIn):
         account: Account = self.account_repository.get_by_id(transaction_in.accountId)
-
-        money: Decimal = Decimal(transaction_in.money)
-        account.balance += money
+        money = Decimal(transaction_in.money)
+        
+        # CORRECTED: Convert the account.balance (float) to a Decimal before adding
+        account.balance = Decimal(str(account.balance)) + money
 
         transaction = Transaction(money, TransactionType.DEPOSIT, account)
         self.transaction_repository.save(transaction)
 
     def transfer(self, transaction_transfer_in: TransactionTransferIn):
-        sender_and_reciver_are_same_account = (
+        if (
             transaction_transfer_in.accountId == transaction_transfer_in.senderAccountId
-        )
-        if sender_and_reciver_are_same_account:
+        ):
             raise CantTransferForYourself()
 
         account_reciver = self.account_repository.get_by_id(
             transaction_transfer_in.accountId
         )
-
         if account_reciver is None:
             raise ReciverAccountNotFound()
 
         account_sender: Account = self.account_repository.get_by_id(
             transaction_transfer_in.senderAccountId
         )
+        money = Decimal(transaction_transfer_in.money)
 
-        money: Decimal = Decimal(transaction_transfer_in.money)
-        if account_sender.balance - money < 0:
+        # CORRECTED: Convert balance to Decimal before comparison
+        if Decimal(str(account_sender.balance)) - money < 0:
             raise InsuficientBalance()
 
         self.validate_daily_withdraw_limit(account_sender, money)
 
-        account_sender.balance -= money
-        account_reciver.balance += money
+        # CORRECTED: Perform all calculations using Decimal for precision
+        account_sender.balance = Decimal(str(account_sender.balance)) - money
+        account_reciver.balance = Decimal(str(account_reciver.balance)) + money
 
         withdraw_transaction = Transaction(
-            -money, TransactionType.WITHDRAW, account_sender, account_reciver
+            Decimal(-money), TransactionType.WITHDRAW, account_sender, account_reciver
         )
-
         deposit_transaction = Transaction(
             money, TransactionType.DEPOSIT, account_reciver, account_sender
         )
-
         self.transaction_repository.save_all(
             [withdraw_transaction, deposit_transaction]
         )
 
     def validate_daily_withdraw_limit(self, account: Account, new_amount: Decimal):
         total = self.transaction_repository.get_total_today_withdraw(account.id)
-
-        if round(-total + new_amount, 2) > account.daily_withdraw_limit:
+        # Ensure total is also a Decimal for the calculation
+        if round(Decimal(-total) + new_amount, 2) > Decimal(str(account.dailyWithdrawLimit)):
             raise DailyWithdrawLimitExceeded()

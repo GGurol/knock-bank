@@ -8,7 +8,7 @@ export function Header() {
 
   return (
     <header className="bg-white h-20 w-full py-3 px-8">
-      <small className="text-sm"> Seja bem vindo </small>
+      <small className="text-sm"> Welcome </small>
       <div className="text-sm">
         {!isPending ? (
           <>

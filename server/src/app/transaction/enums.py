@@ -1,10 +1,11 @@
 from enum import Enum
 
 
-class TransactionType(Enum):
-    DEPOSIT = (1, 'Deposit')
-    WITHDRAW = (2, 'Withdraw')
-
+class TransactionType(str, Enum):
+    DEPOSIT = "DEPOSIT"
+    WITHDRAW = "WITHDRAW"
+    
+"""
     @classmethod
     def get_transaction_type(cls, transaction_type_id: int):
         for transaction_type in cls:
@@ -12,3 +13,4 @@ class TransactionType(Enum):
                 return transaction_type
 
         raise ValueError('Invalid Transaction Type')
+"""

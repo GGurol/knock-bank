@@ -8,7 +8,7 @@ from sqlalchemy.orm import Mapped, relationship
 from core.db import BaseModel, Long
 from app.auth.enums import AccountType
 
-# We use TYPE_CHECKING for type hints without causing import cycles at runtime.
+# Use TYPE_CHECKING for type hints without causing import cycles at runtime.
 if t.TYPE_CHECKING:
     from app.auth.models import User
     from app.transaction.models import Transaction
@@ -40,14 +40,19 @@ class Account(BaseModel):
 
     person_id: Mapped[int] = Column(Long, ForeignKey('person.id'), unique=True)
     
-    # Relationships
     person: Mapped['Person'] = relationship('Person', back_populates='account')
     
-    # Transactions where this account is the destination
+    # Relationship for transactions where this account is the primary account
     transactions: Mapped[list['Transaction']] = relationship(
-        'Transaction', back_populates='account', foreign_keys='Transaction.account_id'
+        'Transaction', 
+        back_populates='account',
+        foreign_keys='Transaction.account_id'
     )
-    # Transactions where this account was the origin
+    
+    # --- ADD THIS RELATIONSHIP ---
+    # Relationship for transfers originating from this account
     originated_transactions: Mapped[list['Transaction']] = relationship(
-        'Transaction', back_populates='origin_account', foreign_keys='Transaction.origin_account_id'
+        'Transaction', 
+        back_populates='origin_account',
+        foreign_keys='Transaction.origin_account_id'
     )

@@ -1,12 +1,13 @@
-from pydantic import BaseModel, Field
 from datetime import datetime, date
+from pydantic import BaseModel, Field, ConfigDict, model_validator
 from utils.schemas import PaginationQuery
 from app.account.schemas import PersonBasicOut
-
+from app.transaction.enums import TransactionType # 1. Import the Enum
 
 class TransactionFilter(PaginationQuery):
     transactionDate: date | None = None
-    transactionType: int | None = Field(ge=1, le=2, default=None)
+    # 2. Use the Enum for type safety
+    transactionType: TransactionType | None = None
 
 
 class MoneyIn(BaseModel):
@@ -24,10 +25,24 @@ class TransactionTransferIn(TransactionIn):
 class TransactionOut(BaseModel):
     id: int
     money: float
-    dateTime: datetime
-    transactionType: int
+    dateTime: datetime = Field(alias='date_time')
+    transactionType: TransactionType = Field(alias='transaction_type')
     account: PersonBasicOut | None = None
-    originAccount: PersonBasicOut | None = None
+    originAccount: PersonBasicOut | None = Field(alias='origin_account')
+    
+    model_config = ConfigDict(from_attributes=True)
+    
+    @model_validator(mode='before')
+    @classmethod
+    def get_person_from_account(cls, data):
+        # This validator intercepts the raw database object before validation.
+        # It replaces the 'account' attribute (an Account object)
+        # with the 'person' attribute from that account object.
+        if hasattr(data, 'account') and hasattr(data.account, 'person'):
+            data.account = data.account.person
+        if hasattr(data, 'origin_account') and data.origin_account and hasattr(data.origin_account, 'person'):
+            data.origin_account = data.origin_account.person
+        return data
 
 
 class TransactionMonthResumeNumericOut(BaseModel):

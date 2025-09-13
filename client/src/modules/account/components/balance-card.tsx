@@ -27,7 +27,7 @@ export function BalanceCard() {
   return (
     <Card className="h-full flex flex-col justify-between lg:col-span-2">
       <CardHeader className="w-full flex flex-row justify-between">
-        <h2 className="text-2xl font-semibold">Saldo</h2>
+        <h2 className="text-2xl font-semibold">Account Balance</h2>
         <BalanceVisibilityToggle />
       </CardHeader>
       <CardContent className="w-full flex flex-col items-center gap-12">

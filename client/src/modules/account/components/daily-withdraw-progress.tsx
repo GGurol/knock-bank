@@ -16,7 +16,7 @@ export function DailyWithdrawProgress({
           htmlFor="daily-withdraw-progress"
           className="text-xl font-semibold"
         >
-          Limite de Saque Diário
+          Daily Withdraw Limit
         </label>
         <div className="text-lg font-medium flex flex-row gap-2 items-center">
           <Hiddleble className="w-16 h-6 shadow-md">
