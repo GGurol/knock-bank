@@ -48,7 +48,7 @@ export const nextAuthOptions: NextAuthOptions = {
             throw error;
           }
 
-          throw new Error("An unexpected error occurred.");
+          throw new Error("An unexpected error occurred. ( client/src/app/api/auth/options.ts )");
         }
       },
     }),

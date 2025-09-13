@@ -1,13 +1,27 @@
 from fastapi import Depends
 from dataclasses import dataclass
-from core.db import get_db
 from sqlalchemy import select, or_, func
 from sqlalchemy.orm import Session
+from core.db import get_db
 from app.account.schemas import AccountFilter
-from app.auth.models import User
 from app.account.models import Account, Person
 
+# --- ADDED: PersonRepository to manage Person objects ---
+@dataclass
+class PersonRepository:
+    db: Session = Depends(get_db)
 
+    def save(self, person: Person) -> Person:
+        self.db.add(person)
+        self.db.commit()
+        self.db.refresh(person)
+        return person
+
+    def get_by_cpf(self, cpf: str) -> Person | None:
+        query = select(Person).where(Person.cpf == cpf)
+        return self.db.execute(query).scalars().first()
+
+# --- CORRECTED: AccountRepository ---
 @dataclass
 class AccountRepository:
     db: Session = Depends(get_db)
@@ -18,7 +32,7 @@ class AccountRepository:
         query = (
             select(Account, func.count(Account.id).over().label('total'))
             .join(Person, Account.person_id == Person.id)
-            .where(Account.fl_active == True)
+            .where(Account.flActive == True)
             .limit(filter.pageSize)
             .offset(
                 filter.pageIndex - 1
@@ -39,7 +53,6 @@ class AccountRepository:
             )
 
         results = self.db.execute(query).all()
-
         data = [result[0] for result in results]
         total = results[0]._asdict().get('total') if len(results) > 0 else 0
 
@@ -50,21 +63,21 @@ class AccountRepository:
         return self.db.execute(query).scalars().first()
 
     def get_by_cpf(self, cpf: str, active: bool = None) -> Account | None:
+        # CORRECTED: Removed the incorrect join to the User table
         query = (
             select(Account)
-            .join(User, Account.user_id == User.id)
             .join(Person, Account.person_id == Person.id)
             .where(Person.cpf == cpf)
         )
 
         if active is not None:
-            query = query.where(Account.fl_active == active)
+            query = query.where(Account.flActive == active)
 
         return self.db.execute(query).scalars().first()
 
     def save(self, account: Account) -> Account:
-        if account.id is None:
-            self.db.add(account)
-
+        # Using merge is a safer way to handle both create and update
+        saved_account = self.db.merge(account)
         self.db.commit()
-        return account
+        self.db.refresh(saved_account)
+        return saved_account

@@ -1,5 +1,6 @@
 import { z } from "zod";
-import { cpf } from "cpf-cnpj-validator";
+// The 'cpf-cnpj-validator' is no longer needed
+// import { cpf } from "cpf-cnpj-validator";
 import { PaginationQuery } from "@/lib/pagination";
 
 export type Person = {
@@ -41,7 +42,7 @@ export const UpdateAccountSchema = z.object({
   birthDate: z
     .string({ required_error: "Birth date is required." })
     .refine((val) => /^\d{4}-\d{2}-\d{2}$/.test(val), {
-      message: "Date in an invalid format. (YYYY-MM-DD)",
+      message: "Date in an invalid format. (YYYY--MM-DD)",
     }),
   accountType: z.number(),
   dailyWithdrawLimit: z.coerce
@@ -60,42 +61,11 @@ export const CreateAccountSchema = z.object({
     .trim()
     .min(4, "Your name must contain at least 4 characters."),
 
-  /*
-  cpf: z //123.456.789-00 that will pass the check.
-    .string()
-    .trim()
-    .refine((doc) => {
-      const replacedDoc = doc.replace(/\D/g, "");
-      return replacedDoc.length == 11;
-    }, "Your CPF must contain 11 characters.")
-    .refine((doc) => {
-      const replacedDoc = doc.replace(/\D/g, "");
-      return !!Number(replacedDoc);
-    }, "Your CPF must contain only numbers.")
-    .refine((cpfValue: string) => cpf.isValid(cpfValue), "Invalid CPF.")
-    .transform((doc) => doc.replace(/\D/g, "")),
-  */
-
-    cpf: z // 11 digit any number
-    .string()
-    .trim()
-    // 1. Keeps the check that it must contain 11 digits
-    .refine((doc) => {
-      const replacedDoc = doc.replace(/\D/g, "");
-      return replacedDoc.length === 11;
-    }, "CPF must contain 11 characters.")
-    // 2. REMOVED the mathematical cpf.isValid check
-    // .refine((cpfValue: string) => cpf.isValid(cpfValue), "Invalid CPF.") 
-    // 3. ADDED the check that it does not start with '0'
-    .refine((doc) => {
-      const replacedDoc = doc.replace(/\D/g, "");
-      return !replacedDoc.startsWith('0');
-    }, "CPF cannot start with '0'.")
-    .transform((doc) => doc.replace(/\D/g, "")),
+  // --- CPF VALIDATION DISABLED ---
+  // Now it's just a simple string field with no special rules.
+  cpf: z.string(),
 
   birthDate: z
-    // .date({ required_error: "Birth date is required." })
-    // .transform((date) => date.toISOString().split("T")[0]),
     .string({ required_error: "Birth date is required." })
     .refine((val) => /^\d{4}-\d{2}-\d{2}$/.test(val), {
       message: "Date in an invalid format. (YYYY-MM-DD)",

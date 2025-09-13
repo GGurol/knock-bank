@@ -1,28 +1,22 @@
 import typing as t
-from utils import crypt
 from core.db import BaseModel, Long
 from sqlalchemy import Column, String
 from sqlalchemy.orm import Mapped, relationship
 
-
-if t.TYPE_CHECKING:
-    from app.account.models import Account
-
+# We no longer need the TYPE_CHECKING import for Person here
+# because we will use a string reference.
 
 class User(BaseModel):
-    __tablename__ = 'users'
+    __tablename__ = 'user'
 
     id: Mapped[int] = Column(Long, primary_key=True, autoincrement=True)
     password: Mapped[str] = Column(String(255), nullable=False)
     token: Mapped[str] = Column(String(255), nullable=True)
-    refresh_token: Mapped[str] = Column(String(255), nullable=True)
-
-    account: Mapped['Account'] = relationship(
-        'Account', lazy='joined', back_populates='user'
+    
+    # The relationship now uses the string 'Person' to avoid circular imports.
+    person: Mapped['Person'] = relationship(
+        'Person', 
+        back_populates='user', 
+        cascade='all, delete-orphan', 
+        uselist=False
     )
-
-    def __init__(self, password: str) -> None:
-        self.password = crypt.hash(password)
-
-    def verify_password_hash(self, password: str) -> bool:
-        return crypt.check_hash(password, self.password)

@@ -98,10 +98,15 @@ export class Api {
           throw new ApiUnauthorizedError(data?.message, data?.detail);
         case HttpStatus.Forbidden:
           throw new ApiForbiddenError(data?.message, data?.detail);
+        
+        // ADDED: Handle 422 Unprocessable Entity for validation errors
+        case HttpStatus.UnprocessableEntity:
+          throw new ApiUnprocessableEntityError(data?.detail, data?.detail); // Using detail for Pydantic errors
+
         case HttpStatus.InternalServerError:
           throw new ApiInternalServerError(data?.message, data?.detail);
         default:
-          throw new ApiError("An unexpected error occurred.", undefined);
+          throw new ApiError("An unexpected error occurred. ( client/src/lib/api.ts )", undefined);
       }
     }
   }
@@ -114,18 +119,19 @@ export const HttpStatus = {
   BadRequest: 400,
   Unauthorized: 401,
   Forbidden: 403,
+  UnprocessableEntity: 422, // ADDED: Status code for validation errors
   InternalServerError: 500,
 };
 
 export type ApiResponse = {
   message: string;
-  detail?: object;
+  detail?: any; // Changed to 'any' to handle different error structures
 };
 
 export class ApiError extends Error {
-  detail?: object;
+  detail?: any;
 
-  constructor(message: string, detail?: object) {
+  constructor(message: string, detail?: any) {
     super(message);
     this.detail = detail;
   }
@@ -134,4 +140,5 @@ export class ApiError extends Error {
 export class ApiBadRequestError extends ApiError {}
 export class ApiUnauthorizedError extends ApiError {}
 export class ApiForbiddenError extends ApiError {}
+export class ApiUnprocessableEntityError extends ApiError {} // ADDED: New error class
 export class ApiInternalServerError extends ApiError {}

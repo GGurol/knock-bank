@@ -16,14 +16,19 @@ class Transaction(BaseModel):
     money: Mapped[Decimal] = Column(Numeric(10, 2), nullable=False)
     transaction_type: Mapped[int] = Column(Integer, nullable=False)
 
-    account_id: Mapped[int] = Column(Long, ForeignKey('accounts.id'), nullable=False)
-    account: Mapped['Account'] = relationship('Account', foreign_keys=[account_id])
+    # --- FIX WAS HERE ---
+    # Corrected 'accounts.id' to 'account.id' (singular)
+    account_id: Mapped[int] = Column(Long, ForeignKey('account.id'), nullable=False)
+    account: Mapped['Account'] = relationship(
+        'Account', back_populates='transactions', foreign_keys=[account_id]
+    )
 
+    # --- AND HERE ---
     origin_account_id: Mapped[int] = Column(
-        Long, ForeignKey('accounts.id'), nullable=True
+        Long, ForeignKey('account.id'), nullable=True
     )
     origin_account: Mapped['Account'] = relationship(
-        'Account', foreign_keys=[origin_account_id]
+        'Account', back_populates='originated_transactions', foreign_keys=[origin_account_id]
     )
 
     def __init__(
@@ -40,11 +45,11 @@ class Transaction(BaseModel):
         )
         self.transaction_type = transaction_type.value[0]
         self.account_id = account.id
-        self.account = account
+        # self.account = account # This line is redundant when using relationships
         self.origin_account_id = (
             origin_account.id if origin_account is not None else None
         )
-        self.origin_account = origin_account
+        # self.origin_account = origin_account # This line is redundant as well
 
     def __str__(self) -> str:
         return f'<Transaction - {self.account.person.name} | R${self.money:.2f}>'

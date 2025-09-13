@@ -1,13 +1,14 @@
 [project]
 name = "knockbank-api"
 version = "0.1.0"
-description = "Add your description here"
+description = "A banking API for the KnockBank project."
 readme = "README.md"
 requires-python = ">=3.12"
+
+# --- Main Application Dependencies ---
 dependencies = [
     "alembic>=1.15.2",
     "fastapi[standard]>=0.115.12",
-    "bcrypt==4.0.1",
     "sqlalchemy>=2.0.40",
     "mysql-connector-python>=9.3.0",
     "passlib[bcrypt]>=1.7.4",
@@ -18,57 +19,33 @@ dependencies = [
     "validate-docbr>=1.10.0",
 ]
 
-[dependency-groups]
+# --- CORRECTED: Modern format for optional/development dependencies ---
+[project.optional-dependencies]
 dev = [
     "pytest>=8.3.5",
     "pytest-cov>=6.1.1",
     "ruff>=0.11.8",
 ]
 
+# --- Tool Configurations ---
 [tool.pytest.ini_options]
 markers = [
     "auth",
     "account",
     "transaction",
 ]
-
 filterwarnings = [
     "ignore::DeprecationWarning",
 ]
 
-
 [tool.ruff]
 exclude = [
-    ".bzr",
-    ".direnv",
-    ".eggs",
-    ".git",
-    ".git-rewrite",
-    ".hg",
-    ".ipynb_checkpoints",
-    ".mypy_cache",
-    ".nox",
-    ".pants.d",
-    ".pyenv",
-    ".pytest_cache",
-    ".pytype",
-    ".ruff_cache",
-    ".svn",
-    ".tox",
-    ".venv",
-    ".vscode",
-    "__pypackages__",
-    "_build",
-    "buck-out",
-    "build",
-    "dist",
-    "node_modules",
-    "site-packages",
-    "venv",
-    ".venv",
-    "migrations"
+    ".bzr", ".direnv", ".eggs", ".git", ".git-rewrite", ".hg",
+    ".ipynb_checkpoints", ".mypy_cache", ".nox", ".pants.d", ".pyenv",
+    ".pytest_cache", ".pytype", ".ruff_cache", ".svn", ".tox", ".venv",
+    ".vscode", "__pypackages__", "_build", "buck-out", "build", "dist",
+    "node_modules", "site-packages", "venv", ".venv", "migrations"
 ]
-
 line-length = 88
 indent-width = 4
 

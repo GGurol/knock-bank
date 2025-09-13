@@ -1,17 +1,25 @@
 services:
   db:
-    image: mysql:8.3.0
+    image: mysql:8.0
     container_name: knockbank-db
     command: --default-authentication-plugin=mysql_native_password
     ports:
       - "3306:3306"
     environment:
-      MYSQL_DATABASE: 'knock_bank_db'
-      MYSQL_USER: 'admin'
-      MYSQL_PASSWORD: 'admin'
-      MYSQL_ROOT_PASSWORD: 'password'
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
     volumes:
       - mysql-db:/var/lib/mysql
+    # --- BU BÖLÜM ÇOK ÖNEMLİ ---
+    # Bu blok, periyodik olarak container içindeki MySQL sunucusunun
+    # bağlantı kabul etmeye hazır olup olmadığını kontrol eder.
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost", "-u", "${DB_USER}", "-p${DB_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   api:
     container_name: knockbank-api
@@ -19,33 +27,42 @@ services:
       - "8000:8000"
     build: 
       context: ./server
+    volumes:
+      - ./server/src:/app # Kodunuzu senkronize eder
+      # Önceki projede paketler için bir volume vardı, bu projede gerekmeyebilir.
+      # Eğer `pip freeze` yine boş dönerse bu satırı tekrar ekleriz:
+      # - packages:/usr/local/lib/python3.12/site-packages 
     environment:
-      TOKEN_SECRET: 'supersecretkey'
-      SHOW_SQL: false
-      #SQLALCHEMY_DATABASE_URI: 'mysql+mysqlconnector://admin:admin@db:3306/knock_bank_db'
-      SQLALCHEMY_DATABASE_URI: 'mysql+mysqlconnector://admin:admin@db:3306/knock_bank_db?ssl_mode=DISABLED'
+      TOKEN_SECRET: ${JWT_SECRET}
+      SHOW_SQL: 'false'
+      SQLALCHEMY_DATABASE_URI: 'mysql+mysqlconnector://${DB_USER}:${DB_PASSWORD}@db:3306/${DB_NAME}'
+    # --- BU BÖLÜM DE ÇOK ÖNEMLİ ---
+    # Bu, 'api' servisine, 'db' servisinin sadece başlamasını değil,
+    # tamamen "sağlıklı" (healthy) olmasını beklemesini söyler.
     depends_on:
-      - db
+      db:
+        condition: service_healthy
 
   web:
+    # ... (web servisinizde değişiklik yok)
     container_name: knockbank-web
+    environment:
+      NEXT_PUBLIC_API_URL: 'http://localhost:8000/api'
+      NEXT_PRIVATE_API_URL: 'http://api:8000/api'
+      NEXTAUTH_URL: 'http://localhost:3000'
+      NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
     ports:
       - "3000:3000"
     build: 
       context: ./client
       args:
         NEXT_PUBLIC_API_URL: 'http://localhost:8000/api'
-    environment:
-      NEXT_PUBLIC_API_URL: 'http://localhost:8000/api'
-      NEXT_PRIVATE_API_URL: 'http://api:8000/api'
-      NEXTAUTH_URL: 'http://localhost:3000'
-      NEXTAUTH_SECRET: 'ixULWpM8PfB9NposRUy/ypGFjVsSE/qVqYkY7+/ml0M='
+        NEXT_PRIVATE_API_URL: 'http://api:8000/api'
+        NEXTAUTH_URL: 'http://localhost:3000'
+        NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
     depends_on:
       - api
 
-networks:
-  default:
-    driver: bridge
-
 volumes:
   mysql-db:
+  # packages: # Eğer yukarıda packages volume'ünü kullanırsak bu satır kalmalı

@@ -1,102 +1,53 @@
-from decimal import Decimal
+import typing as t
 from datetime import date
-from app.auth.models import User
-from app.account.schemas import UpdateAccountIn
-from core.db import BaseModel, Long
-from sqlalchemy import Column, ForeignKey, String, Date, Integer, Numeric, Boolean
+from sqlalchemy import (
+    Column, String, ForeignKey, Date, Float, 
+    Boolean, Enum as EnumDB
+)
 from sqlalchemy.orm import Mapped, relationship
+from core.db import BaseModel, Long
+from app.auth.enums import AccountType
 
+# We use TYPE_CHECKING for type hints without causing import cycles at runtime.
+if t.TYPE_CHECKING:
+    from app.auth.models import User
+    from app.transaction.models import Transaction
 
 class Person(BaseModel):
-    __tablename__ = 'persons'
-
-    id: Mapped[int] = Column(Long, primary_key=True, autoincrement=True)
-    cpf: Mapped[str] = Column(String(11), nullable=False, unique=True)
-    name: Mapped[str] = Column(String(255), nullable=False)
-    birth_date: Mapped[date] = Column(Date, nullable=False)
-
-    account: Mapped['Account'] = relationship('Account', back_populates='person')
-
-    def __str__(self) -> str:
-        return f'<Person - {self.name}>'
-
-    def __init__(self, name: str, cpf: str, birth_date: date) -> None:
-        self.name = name
-        self.cpf = cpf
-        self.birth_date = birth_date
-
+    __tablename__ = 'person'
+    
+    id: Mapped[int] = Column(Long, primary_key=True, index=True)
+    name: Mapped[str] = Column(String(100), nullable=False)
+    cpf: Mapped[str] = Column(String(11), unique=True, index=True, nullable=False)
+    birthDate: Mapped[date] = Column(Date, nullable=False)
+    
+    user_id: Mapped[int] = Column(Long, ForeignKey('user.id'), unique=True)
+    
+    # Relationships use string references to avoid circular imports.
+    user: Mapped['User'] = relationship('User', back_populates='person')
+    account: Mapped['Account'] = relationship(
+        'Account', back_populates='person', cascade='all, delete-orphan', uselist=False
+    )
 
 class Account(BaseModel):
-    __tablename__ = 'accounts'
+    __tablename__ = 'account'
 
-    id: Mapped[int] = Column(Long, primary_key=True, autoincrement=True)
-    balance: Mapped[Decimal] = Column(
-        Numeric(10, 2),
-        nullable=False,
-        default=Decimal(0),
-    )
-    fl_active: Mapped[bool] = Column(Boolean, nullable=False, default=True)
-    account_type: Mapped[int] = Column(Integer, nullable=False)
-    daily_withdraw_limit: Mapped[Decimal] = Column(
-        Numeric(10, 2), nullable=False, default=Decimal(999)
-    )
+    id: Mapped[int] = Column(Long, primary_key=True, index=True)
+    balance: Mapped[float] = Column(Float, default=0.0)
+    dailyWithdrawLimit: Mapped[float] = Column(Float, default=1000.0)
+    flActive: Mapped[bool] = Column(Boolean, default=True)
+    accountType: Mapped[AccountType] = Column(EnumDB(AccountType), default=AccountType.CURRENT_ACCOUNT)
 
-    person_id: Mapped[int] = Column(
-        Long, ForeignKey('persons.id'), nullable=False, unique=True
-    )
+    person_id: Mapped[int] = Column(Long, ForeignKey('person.id'), unique=True)
+    
+    # Relationships
     person: Mapped['Person'] = relationship('Person', back_populates='account')
-
-    user_id: Mapped[int] = Column(
-        Long, ForeignKey('users.id'), nullable=False, unique=True
+    
+    # Transactions where this account is the destination
+    transactions: Mapped[list['Transaction']] = relationship(
+        'Transaction', back_populates='account', foreign_keys='Transaction.account_id'
     )
-    user: Mapped['User'] = relationship(
-        'User', cascade='save-update', back_populates='account'
+    # Transactions where this account was the origin
+    originated_transactions: Mapped[list['Transaction']] = relationship(
+        'Transaction', back_populates='origin_account', foreign_keys='Transaction.origin_account_id'
     )
-
-    def __init__(
-        self,
-        name: str,
-        cpf: str,
-        birthDate: date,
-        password: str,
-        accountType: int,
-        dailyWithdrawLimit: float = 999,
-    ) -> None:
-        self.person = Person(name, cpf, birthDate)
-        self.user = User(password)
-        self.account_type = accountType
-        self.balance = 0
-        self.daily_withdraw_limit = dailyWithdrawLimit
-        self.fl_active = True
-
-    def __str__(self) -> str:
-        return f'<Account - {self.person.name} | {self.id}>'
-
-    def update(self, data: UpdateAccountIn) -> None:
-        self.person.name = data.name
-        self.person.birth_date = data.birthDate
-        self.account_type = data.accountType
-        self.daily_withdraw_limit = data.dailyWithdrawLimit
-
-    def to_json(self, mask_cpf: bool = False) -> dict:
-        return {
-            'id': self.id,
-            'balance': self.balance,
-            'flActive': self.fl_active,
-            'person': {
-                'id': self.person.id,
-                'name': self.person.name,
-                'cpf': (
-                    self.person.cpf
-                    if mask_cpf is False
-                    else '***.'
-                    + self.person.cpf[3:6]
-                    + '.'
-                    + self.person.cpf[6:9]
-                    + '-**'
-                ),
-                'birthDate': self.person.birth_date,
-            },
-            'accountType': self.account_type,
-            'dailyWithdrawLimit': float(self.daily_withdraw_limit),
-        }

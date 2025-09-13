@@ -6,7 +6,7 @@ from sqlalchemy.orm import sessionmaker, Session, DeclarativeBase
 from core.config import settings
 
 
-engine: Engine = create_engine(settings.DATABASE_URI, echo=settings.SHOW_SQL)
+engine: Engine = create_engine(settings.SQLALCHEMY_DATABASE_URI, echo=settings.SHOW_SQL)
 
 
 SessionLocal = sessionmaker(

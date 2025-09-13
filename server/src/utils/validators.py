@@ -1,10 +1,24 @@
 from validate_docbr import CPF
 from string import ascii_lowercase, ascii_uppercase, digits, punctuation
 
-
+"""
 def validate_cpf(value: str) -> None:
     if CPF().validate(value) is False:
         raise ValueError('Invalid CPF.')
+"""
+
+
+def validate_cpf(value: str) -> None:
+    cleaned_value = ''.join(filter(str.isdigit, value))
+
+    if len(cleaned_value) != 11:
+        raise ValueError('CPF must contain exactly 11 digits.')
+
+    if cleaned_value.startswith('0'):
+        raise ValueError("CPF cannot start with '0'.")
+    
+    return None
+
 
 
 def validate_password(value: str) -> None:
