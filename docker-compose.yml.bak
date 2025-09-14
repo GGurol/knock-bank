@@ -43,38 +43,23 @@ services:
       db:
         condition: service_healthy
 
-# docker-compose.yml
-
   web:
+    # ... (web servisinizde değişiklik yok)
     container_name: knockbank-web
-    build: 
-      context: ./client
-      # Tell Docker to use our new development-specific Dockerfile
-      dockerfile: Dockerfile.dev
-    
-    volumes:
-      # 1. Mount the local ./client directory to the /app directory in the container.
-      #    This is how hot-reloading sees your file changes.
-      - ./client:/app
-      
-      # 2. Prevent the local node_modules from overriding the container's. VERY IMPORTANT!
-      - /app/node_modules
-    
-    # 3. Explicitly tell the container to run the development server.
-    #    This overrides the CMD in the Dockerfile.
-    command: yarn run dev
-    
-    ports:
-      - "3000:3000"
-      
     environment:
-      # This helps the file watcher work correctly inside Docker
-      CHOKIDAR_USEPOLLING: 'true' 
       NEXT_PUBLIC_API_URL: 'http://localhost:8000/api'
       NEXT_PRIVATE_API_URL: 'http://api:8000/api'
       NEXTAUTH_URL: 'http://localhost:3000'
       NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
-      
+    ports:
+      - "3000:3000"
+    build: 
+      context: ./client
+      args:
+        NEXT_PUBLIC_API_URL: 'http://localhost:8000/api'
+        NEXT_PRIVATE_API_URL: 'http://api:8000/api'
+        NEXTAUTH_URL: 'http://localhost:3000'
+        NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
     depends_on:
       - api
 

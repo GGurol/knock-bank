@@ -1,0 +1,23 @@
+# ./client/Dockerfile.dev
+
+# Use the same base image
+FROM node:20-alpine
+
+# Set the working directory inside the container
+# Note: I'm using /app to match the docker-compose volume
+WORKDIR /app
+
+# Copy package manifests
+COPY package.json yarn.lock ./
+
+# Install ALL dependencies, including devDependencies
+RUN yarn install
+
+# We will NOT copy source code here, the volume will handle it.
+
+# Expose the port for the development server
+EXPOSE 3000
+
+# The command to run will be provided by docker-compose.yml
+# But we can set a default one here as a fallback.
+CMD ["yarn", "run", "dev"]
