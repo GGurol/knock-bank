@@ -7,19 +7,27 @@ requires-python = ">=3.12"
 
 # --- Main Application Dependencies ---
 dependencies = [
-    "alembic>=1.15.2",
+    # Core Framework
     "fastapi[standard]>=0.115.12",
+    
+    # Database & ORM
     "sqlalchemy>=2.0.40",
+    "alembic>=1.15.2",
     "mysql-connector-python>=9.3.0",
+    
+    # Security & Authentication
+    "bcrypt==4.0.1",
     "passlib[bcrypt]>=1.7.4",
-    "pydantic-settings>=2.9.1",
     "pyjwt>=2.10.1",
+    
+    # Configuration & Utilities
+    "pydantic-settings>=2.9.1",
     "python-dotenv>=1.1.0",
-    "pytz>=2025.2",
     "validate-docbr>=1.10.0",
+    "pytz>=2025.2",
 ]
 
-# --- CORRECTED: Modern format for optional/development dependencies ---
+# --- Development Dependencies ---
 [project.optional-dependencies]
 dev = [
     "pytest>=8.3.5",
@@ -29,14 +37,8 @@ dev = [
 
 # --- Tool Configurations ---
 [tool.pytest.ini_options]
-markers = [
-    "auth",
-    "account",
-    "transaction",
-]
-filterwarnings = [
-    "ignore::DeprecationWarning",
-]
+markers = ["auth", "account", "transaction"]
+filterwarnings = ["ignore::DeprecationWarning"]
 
 [tool.ruff]
 exclude = [

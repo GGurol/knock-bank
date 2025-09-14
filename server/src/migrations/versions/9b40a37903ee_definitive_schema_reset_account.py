@@ -1,8 +1,8 @@
-"""Recreate schema with correct relationships
+"""Definitive schema reset-account
 
-Revision ID: f037975148ad
+Revision ID: 9b40a37903ee
 Revises: 
-Create Date: 2025-09-13 12:51:38.920864
+Create Date: 2025-09-14 10:32:35.525720
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = 'f037975148ad'
+revision: str = '9b40a37903ee'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -55,7 +55,7 @@ def upgrade() -> None:
     sa.Column('id', sa.BigInteger().with_variant(sa.INTEGER(), 'sqlite'), autoincrement=True, nullable=False),
     sa.Column('date_time', sa.DateTime(), nullable=False),
     sa.Column('money', sa.Numeric(precision=10, scale=2), nullable=False),
-    sa.Column('transaction_type', sa.Integer(), nullable=False),
+    sa.Column('transaction_type', sa.Enum('DEPOSIT', 'WITHDRAW', name='transactiontype'), nullable=False),
     sa.Column('account_id', sa.BigInteger().with_variant(sa.INTEGER(), 'sqlite'), nullable=False),
     sa.Column('origin_account_id', sa.BigInteger().with_variant(sa.INTEGER(), 'sqlite'), nullable=True),
     sa.ForeignKeyConstraint(['account_id'], ['account.id'], ),
