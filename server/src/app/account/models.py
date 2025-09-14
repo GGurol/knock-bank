@@ -34,14 +34,14 @@ class Account(BaseModel):
     person_id: Mapped[int] = Column(Long, ForeignKey('person.id'), unique=True)
     person: Mapped['Person'] = relationship('Person', back_populates='account')
     
-    # Explicitly define the relationships using primaryjoin to resolve ambiguity
+    # CORRECTED: Explicitly tell SQLAlchemy which foreign key to use for each relationship
     transactions: Mapped[list['Transaction']] = relationship(
-        'Transaction',
-        primaryjoin='Account.id == Transaction.account_id',
-        back_populates='account'
+        'Transaction', 
+        back_populates='account', 
+        foreign_keys='[Transaction.account_id]'
     )
     originated_transactions: Mapped[list['Transaction']] = relationship(
-        'Transaction',
-        primaryjoin='Account.id == Transaction.origin_account_id',
-        back_populates='origin_account'
+        'Transaction', 
+        back_populates='origin_account', 
+        foreign_keys='[Transaction.origin_account_id]'
     )
