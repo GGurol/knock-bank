@@ -9,23 +9,23 @@ def create_year_transaction_resume_by_month(
 ):
     months = {
         1: 'Jan',
-        2: 'Fev',
+        2: 'Feb',
         3: 'Mar',
-        4: 'Abr',
-        5: 'Mai',
+        4: 'Apr',
+        5: 'May',
         6: 'Jun',
         7: 'Jul',
-        8: 'Ago',
-        9: 'Set',
-        10: 'Out',
+        8: 'Agu',
+        9: 'Sep',
+        10: 'Oct',
         11: 'Nov',
-        12: 'Dez',
+        12: 'Dec',
     }
     this_year_transactions_resume: list[dict] = []
 
     for _, value in months.items():
-        this_year_transactions_resume.append({'month': value, 'label': 'Entrada'})
-        this_year_transactions_resume.append({'month': value, 'label': 'Saída'})
+        this_year_transactions_resume.append({'month': value, 'label': 'Deposit'})
+        this_year_transactions_resume.append({'month': value, 'label': 'Withdraw'})
 
     if len(data) == 0:
         return [

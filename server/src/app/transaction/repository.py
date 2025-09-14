@@ -52,9 +52,9 @@ class TransactionRepository:
             select(func.sum(Transaction.money))
             .where(Transaction.account_id == account_id)
             .where(func.date(Transaction.date_time) == (date.today()))
-            .where(Transaction.transaction_type == TransactionType.WITHDRAW.value[0])
+            # CORRECTED: Use the enum member directly, not its value
+            .where(Transaction.transaction_type == TransactionType.WITHDRAW)
         )
-
         total = self.db.execute(query).scalars().first()
         return total if total is not None else Decimal(0)
 
@@ -64,8 +64,8 @@ class TransactionRepository:
             SELECT
                 MONTH(t.date_time) as month,
                 (CASE WHEN t.transaction_type = 1 
-                    THEN 'Entrada'
-                    ELSE 'Saída' 
+                    THEN 'Deposit'
+                    ELSE 'Withdraw' 
                 END) as label,
                 SUM(ABS(t.money)) as amount
             FROM 

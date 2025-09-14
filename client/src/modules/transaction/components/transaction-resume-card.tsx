@@ -18,11 +18,11 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 const chartConfig = {
   input: {
-    label: "Inflow",
+    label: "Inflow", // English label
     color: "var(--color-success)",
   },
   output: {
-    label: "Outflow",
+    label: "Outflow", // English label
     color: "var(--color-destructive)",
   },
 } satisfies ChartConfig;
@@ -30,14 +30,23 @@ const chartConfig = {
 function getChartData(dataList: TransactionMonthResume[]) {
   const months = Array.from(new Set(dataList.map((data) => data.month)));
 
-  const dataInput = dataList.filter((data) => data.label == "Entrada");
-  const dataOutput = dataList.filter((data) => data.label == "Saída");
+  // CORRECTED: Use the English labels from your backend Enum
+  const dataInput = dataList.filter((data) => data.label == "DEPOSIT");
+  const dataOutput = dataList.filter((data) => data.label == "WITHDRAW");
 
-  const resumeChartData = months.map((month) => ({
-    month,
-    input: dataInput.find((input) => input.month == month)!.amount,
-    output: dataOutput.find((output) => output.month == month)!.amount,
-  }));
+  // CORRECTED: This mapping is now safe and handles missing data.
+  const resumeChartData = months.map((month) => {
+    const monthInput = dataInput.find((input) => input.month === month);
+    const monthOutput = dataOutput.find((output) => output.month === month);
+
+    return {
+      month,
+      // If a matching input is found, use its amount. Otherwise, use 0.
+      input: monthInput ? monthInput.amount : 0,
+      // If a matching output is found, use its amount. Otherwise, use 0.
+      output: monthOutput ? monthOutput.amount : 0,
+    };
+  });
 
   return resumeChartData;
 }
@@ -88,6 +97,8 @@ export function TransactionResumeCard() {
     </Card>
   );
 }
+
+// ... (TooltipContent component remains the same) ...
 
 type TooltipContentProps = {
   name: NameType;

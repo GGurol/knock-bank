@@ -13,7 +13,6 @@ if t.TYPE_CHECKING:
     from app.transaction.models import Transaction
 
 class Person(BaseModel):
-    # This model remains correct, no changes needed here.
     __tablename__ = 'person'
     id: Mapped[int] = Column(Long, primary_key=True, index=True)
     name: Mapped[str] = Column(String(100), nullable=False)
@@ -35,14 +34,14 @@ class Account(BaseModel):
     person_id: Mapped[int] = Column(Long, ForeignKey('person.id'), unique=True)
     person: Mapped['Person'] = relationship('Person', back_populates='account')
     
-    # CORRECTED: Explicitly tell SQLAlchemy which foreign key to use for each relationship
+    # Explicitly define the relationships using primaryjoin to resolve ambiguity
     transactions: Mapped[list['Transaction']] = relationship(
-        'Transaction', 
-        back_populates='account', 
-        foreign_keys='[Transaction.account_id]'
+        'Transaction',
+        primaryjoin='Account.id == Transaction.account_id',
+        back_populates='account'
     )
     originated_transactions: Mapped[list['Transaction']] = relationship(
-        'Transaction', 
-        back_populates='origin_account', 
-        foreign_keys='[Transaction.origin_account_id]'
+        'Transaction',
+        primaryjoin='Account.id == Transaction.origin_account_id',
+        back_populates='origin_account'
     )

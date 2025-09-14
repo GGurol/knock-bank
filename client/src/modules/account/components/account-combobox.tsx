@@ -43,7 +43,7 @@ export function AccountCombobox({
             onValueChange={(value) => setFilters({ search: value })}
           />
           <CommandList>
-            <CommandEmpty>Não há resultados para mostrar.</CommandEmpty>
+            <CommandEmpty>No results found.</CommandEmpty>
             <CommandGroup>
               {accounts?.data.map((account) => (
                 <CommandItem
