@@ -29,6 +29,30 @@ KnockBank is a modern full stack banking platform that allows its users to depos
 
 ⸻
 
+## 🚀 Getting Started
+
+### 📦 Requirements
+
+    • Docker & Docker Compose
+
+⸻
+
+## 🐳 Start with Docker
+
+### Build and run everything
+
+`git clone https://github.com/GGurol/knock-bank.git`
+
+`cd knock-bank`
+
+`docker-compose up --build`
+
+Access the frontend at http://localhost:3000.
+
+You can also access the backend API docs at http://localhost:8000/api/docs.
+
+⸻
+
 ## 📂 Project Structure
 
 <pre>
@@ -100,27 +124,6 @@ knock-bank
 > Dashboard
 
 ![dashboard_mobile](.github/assets/dashboard_mobile.png)
-
-⸻
-
-## 🚀 Getting Started
-
-### 📦 Requirements
-    • Python 3.12+
-    • Node.js 20+
-    • Docker & Docker Compose
-
-⸻
-
-## 🐳 Start with Docker
-
-### Build and run everything
-
-`docker-compose up --build`
-
-Access the frontend at http://localhost:3000.
-
-You can also access the backend API docs at http://localhost:8000/api/docs.
 
 ⸻
 
