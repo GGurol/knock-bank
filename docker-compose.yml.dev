@@ -12,9 +12,7 @@ services:
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
     volumes:
       - mysql-db:/var/lib/mysql
-    # --- BU BÖLÜM ÇOK ÖNEMLİ ---
-    # Bu blok, periyodik olarak container içindeki MySQL sunucusunun
-    # bağlantı kabul etmeye hazır olup olmadığını kontrol eder.
+
     healthcheck:
       test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost", "-u", "${DB_USER}", "-p${DB_PASSWORD}"]
       interval: 10s
@@ -29,16 +27,12 @@ services:
       context: ./server
     volumes:
       - ./server/src:/app # Kodunuzu senkronize eder
-      # Önceki projede paketler için bir volume vardı, bu projede gerekmeyebilir.
-      # Eğer `pip freeze` yine boş dönerse bu satırı tekrar ekleriz:
-      # - packages:/usr/local/lib/python3.12/site-packages 
+
     environment:
       TOKEN_SECRET: ${JWT_SECRET}
       SHOW_SQL: 'false'
       SQLALCHEMY_DATABASE_URI: 'mysql+mysqlconnector://${DB_USER}:${DB_PASSWORD}@db:3306/${DB_NAME}'
-    # --- BU BÖLÜM DE ÇOK ÖNEMLİ ---
-    # Bu, 'api' servisine, 'db' servisinin sadece başlamasını değil,
-    # tamamen "sağlıklı" (healthy) olmasını beklemesini söyler.
+
     depends_on:
       db:
         condition: service_healthy
@@ -80,4 +74,3 @@ services:
 
 volumes:
   mysql-db:
-  # packages: # Eğer yukarıda packages volume'ünü kullanırsak bu satır kalmalı

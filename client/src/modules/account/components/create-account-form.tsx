@@ -105,9 +105,18 @@ export function CreateAccountForm() {
                   <FormControl>
                     <DatePicker
                       date={field.value}
-                      onChange={(value: Date) => {
-                        const [datePart] = value.toISOString().split("T");
-                        field.onChange(datePart);
+                      // --- THIS IS THE FIX ---
+                      // We update the function to accept 'Date | undefined'
+                      // and add a check to make sure 'value' exists before using it.
+                      onChange={(value: Date | undefined) => {
+                        if (value) {
+                          // The 'value' is a valid Date, so we can safely format it.
+                          const [datePart] = value.toISOString().split("T");
+                          field.onChange(datePart);
+                        } else {
+                          // If the date is cleared, we update the form with an empty value.
+                          field.onChange(undefined);
+                        }
                       }}
                       disableDays={(date) =>
                         date > new Date() || date < new Date("1900-01-01")

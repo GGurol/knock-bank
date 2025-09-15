@@ -48,6 +48,8 @@ services:
       - "3000:3000"
     build: 
       context: ./client
+      dockerfile: Dockerfile
+
       args:
         NEXT_PUBLIC_API_URL: 'http://localhost:8000/api'
         NEXT_PRIVATE_API_URL: 'http://api:8000/api'

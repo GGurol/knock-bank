@@ -45,11 +45,11 @@ KnockBank is a modern full stack banking platform that allows its users to depos
 
 `cd knock-bank`
 
-`docker-compose up --build`
+`docker-compose up --build -d`
 
-Access the frontend at http://localhost:3000.
+Access the frontend at http://localhost:3000
 
-You can also access the backend API docs at http://localhost:8000/api/docs.
+You can also access the backend API docs at http://localhost:8000/api/docs
 
 ⸻
 

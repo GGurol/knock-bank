@@ -103,9 +103,16 @@ export function MyAccount() {
                     <DatePicker
                       date={field.value}
                       disabled={!editMode}
-                      onChange={(value: Date) => {
-                        const [datePart] = value.toISOString().split("T");
-                        field.onChange(datePart);
+                      // --- FIX #1: DATEPICKER ---
+                      // We update the function to accept 'Date | undefined'
+                      // and add a check to make sure 'value' exists before using it.
+                      onChange={(value: Date | undefined) => {
+                        if (value) {
+                          const [datePart] = value.toISOString().split("T");
+                          field.onChange(datePart);
+                        } else {
+                          field.onChange(undefined);
+                        }
                       }}
                     />
                   </FormControl>
@@ -130,7 +137,7 @@ export function MyAccount() {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectGroup>
-                          <SelectLabel>Tipos de Contas</SelectLabel>
+                          <SelectLabel>Account Types</SelectLabel>
                           <SelectItem value={`${AccountType.CURRENT_ACCOUNT}`}>
                             Checking Account
                           </SelectItem>
@@ -158,18 +165,10 @@ export function MyAccount() {
                 <FormItem className="flex flex-col">
                   <FormLabel>Daily Withdrawal Limit</FormLabel>
                   <FormControl>
-                    <MoneyInput
-                      disabled={!editMode}
-                      value={field.value}
-                      onChange={(e) => {
-                        const cleanedValue = e.target.value
-                          .slice(3)
-                          .replaceAll(".", "")
-                          .replaceAll(",", ".");
-
-                        field.onChange(Number(cleanedValue));
-                      }}
-                    />
+                    {/* --- FIX #2: MONEYINPUT --- */}
+                    {/* We simplify this to pass the field props directly, */}
+                    {/* just like we did for the other forms. */}
+                    <MoneyInput disabled={!editMode} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
