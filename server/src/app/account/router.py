@@ -6,22 +6,21 @@ from app.account.models import Account
 from app.account.service import AccountService
 from app.transaction.repository import TransactionRepository
 from utils.schemas import PaginationResponse
-from app.account.schemas import AccountMeOut # Ensure this is imported
+from app.account.schemas import AccountMeOut, AccountOut # Make sure AccountOut is imported
 
 account_router = APIRouter(tags=['Account'], prefix='/api/account')
 
 
-@account_router.get('/me', response_model=AccountMeOut) # Add response_model
+@account_router.get('/me', response_model=AccountMeOut)
 def get_auth_account(
     user: User = Depends(get_current_user),
     transaction_repository: TransactionRepository = Depends(TransactionRepository),
-) -> AccountMeOut:
+) -> Account: # The Python type hint can remain as the raw model
     """Endpoint to fetch the logged-in user's account data."""
     account: Account = user.person.account
     today_withdraw = transaction_repository.get_total_today_withdraw(account.id)
 
-    # CORRECTED: Instead of a manual .to_json(), we will return the Pydantic model
-    # FastAPI will handle the conversion automatically.
+    # We create the Pydantic model manually here because we are adding a custom field
     return AccountMeOut(
         id=account.id,
         person=account.person,
@@ -33,8 +32,11 @@ def get_auth_account(
     )
 
 
-
-@account_router.get('/')
+# --- THIS IS THE FIX ---
+# We add `response_model=PaginationResponse[AccountOut]` to the decorator.
+# This tells FastAPI to take the raw Account objects returned by the service
+# and automatically convert them into the AccountOut schema for the JSON response.
+@account_router.get('/', response_model=PaginationResponse[AccountOut])
 def get_all(
     filter: AccountFilter = Query(AccountFilter),
     user: User = Depends(get_current_user),
@@ -44,7 +46,6 @@ def get_all(
     Endpoint to search for registered accounts.
     Does not include the querying user's own account.
     """
-    # CORRECTED: The path to the account ID is through user.person
     return account_service.get_all(filter, user.person.account.id)
 
 
@@ -90,7 +91,6 @@ def deactivate_account(
     Endpoint to deactivate an account.
     Only the account owner can perform this action.
     """
-    # CORRECTED: The path to the account ID is through user.person
     account_service.deactivate(id, user.person.account.id)
 
     return {

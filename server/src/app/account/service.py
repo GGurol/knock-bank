@@ -27,12 +27,15 @@ class AccountService:
         self, filter: AccountFilter, account_id: int
     ) -> PaginationResponse[AccountOut]:
         accounts, total = self.account_repository.get_all(filter, account_id)
-        accounts = [
-            AccountOut(**account.to_json(mask_cpf=True)) for account in accounts
-        ]
-
+        
+        # --- THIS IS THE FIX ---
+        # We removed the manual list comprehension that was calling '.to_json()'.
+        # Now, we return the list of SQLAlchemy 'Account' objects directly.
+        # FastAPI and Pydantic will handle the conversion to the 'AccountOut' schema
+        # automatically because of the response_model in the router.
+        
         return PaginationResponse(
-            data=accounts,
+            data=accounts, # The list of raw Account objects is passed here
             total=total,
             pageIndex=filter.pageIndex,
             pageSize=filter.pageSize,
