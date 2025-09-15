@@ -3,43 +3,28 @@ from app.transaction.schemas import (
     TransactionMonthResumeNumericOut,
 )
 
-
 def create_year_transaction_resume_by_month(
     data: list[TransactionMonthResumeNumericOut],
-):
-    months = {
-        1: 'Jan',
-        2: 'Feb',
-        3: 'Mar',
-        4: 'Apr',
-        5: 'May',
-        6: 'Jun',
-        7: 'Jul',
-        8: 'Agu',
-        9: 'Sep',
-        10: 'Oct',
-        11: 'Nov',
-        12: 'Dec',
+) -> list[TransactionMonthResumeOut]:
+    months_map = {
+        1: 'Jan', 2: 'Feb', 3: 'Mar', 4: 'Apr', 5: 'May', 6: 'Jun',
+        7: 'Jul', 8: 'Aug', 9: 'Sep', 10: 'Oct', 11: 'Nov', 12: 'Dec',
     }
-    this_year_transactions_resume: list[dict] = []
 
-    for _, value in months.items():
-        this_year_transactions_resume.append({'month': value, 'label': 'Deposit'})
-        this_year_transactions_resume.append({'month': value, 'label': 'Withdraw'})
+    # --- THIS IS THE FIX ---
+    # The labels are changed to all uppercase to match the database query results.
+    resume_map = {(resume.month, resume.label): resume.amount for resume in data}
 
-    if len(data) == 0:
-        return [
-            TransactionMonthResumeOut(**result, amount=0)
-            for result in this_year_transactions_resume
-        ]
+    final_resume: list[TransactionMonthResumeOut] = []
+    for month_num, month_name in months_map.items():
+        deposit_amount = resume_map.get((month_num, 'DEPOSIT'), 0.0) # Changed to uppercase
+        final_resume.append(
+            TransactionMonthResumeOut(month=month_name, label='DEPOSIT', amount=deposit_amount) # Changed to uppercase
+        )
 
-    for resume in data:
-        for month_resume in this_year_transactions_resume:
-            if months.get(resume.month) == month_resume.get(
-                'month'
-            ) and resume.label == month_resume.get('label'):
-                month_resume['amount'] = resume.amount
-            elif month_resume.get('amount') is None:
-                month_resume['amount'] = 0
+        withdraw_amount = resume_map.get((month_num, 'WITHDRAW'), 0.0) # Changed to uppercase
+        final_resume.append(
+            TransactionMonthResumeOut(month=month_name, label='WITHDRAW', amount=withdraw_amount) # Changed to uppercase
+        )
 
-    return this_year_transactions_resume
+    return final_resume

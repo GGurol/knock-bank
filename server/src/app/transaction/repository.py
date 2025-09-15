@@ -2,7 +2,7 @@ from fastapi import Depends
 from datetime import date
 from decimal import Decimal
 from dataclasses import dataclass
-from sqlalchemy import text, select, func
+from sqlalchemy import text, select, func, case, extract
 from sqlalchemy.orm import Session
 from core.db import get_db
 from app.transaction.models import Transaction
@@ -15,6 +15,7 @@ from app.transaction.resumes import create_year_transaction_resume_by_month
 class TransactionRepository:
     db: Session = Depends(get_db)
 
+    # ... (get_all and get_total_today_withdraw functions remain the same) ...
     def get_all(
         self,
         filter: TransactionFilter,
@@ -52,38 +53,40 @@ class TransactionRepository:
             select(func.sum(Transaction.money))
             .where(Transaction.account_id == account_id)
             .where(func.date(Transaction.date_time) == (date.today()))
-            # CORRECTED: Use the enum member directly, not its value
             .where(Transaction.transaction_type == TransactionType.WITHDRAW)
         )
         total = self.db.execute(query).scalars().first()
         return total if total is not None else Decimal(0)
 
     def get_this_year_transactions(self, account_id: int):
-        query = text(
-            """
-            SELECT
-                MONTH(t.date_time) as month,
-                (CASE WHEN t.transaction_type = 1 
-                    THEN 'Deposit'
-                    ELSE 'Withdraw' 
-                END) as label,
-                SUM(ABS(t.money)) as amount
-            FROM 
-                transactions t
-            WHERE 
-                t.account_id = :account_id
-                AND YEAR(t.date_time) = YEAR(CURRENT_TIMESTAMP())
-            GROUP BY 
-                label, month
-            ORDER BY 
-                month, label
-            """
+        # --- THIS IS THE FIX ---
+        # The labels in the CASE statement are changed to all uppercase
+        # to match what is stored in the database.
+        
+        month_expression = extract('month', Transaction.date_time).label('month')
+        
+        label_expression = case(
+            (Transaction.transaction_type == TransactionType.DEPOSIT.value, 'DEPOSIT'), # Changed to uppercase
+            (Transaction.transaction_type == TransactionType.WITHDRAW.value, 'WITHDRAW'), # Changed to uppercase
+        ).label('label')
+
+        query = (
+            select(
+                month_expression,
+                label_expression,
+                func.sum(func.abs(Transaction.money)).label('amount')
+            )
+            .where(Transaction.account_id == account_id)
+            .where(extract('year', Transaction.date_time) == date.today().year)
+            .group_by(month_expression, label_expression)
+            .order_by(month_expression, label_expression)
         )
 
-        data = self.db.execute(query, {'account_id': account_id}).all()
+        data = self.db.execute(query).all()
         data = [TransactionMonthResumeNumericOut(**row._asdict()) for row in data]
         return create_year_transaction_resume_by_month(data)
 
+    # ... (get_by_id, save, and save_all functions remain the same) ...
     def get_by_id(self, id: int) -> Transaction | None:
         query = select(Transaction).where(Transaction.id == id)
         return self.db.execute(query).scalars().first()
