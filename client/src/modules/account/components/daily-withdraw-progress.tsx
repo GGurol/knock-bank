@@ -1,5 +1,5 @@
 import { Progress } from "@/components/ui/progress";
-import { toBrasilianReal } from "@/lib/masks";
+import { formatCurrency } from "@/lib/masks";
 import { Hiddleble } from "@/components/hiddeble";
 
 export function DailyWithdrawProgress({
@@ -20,11 +20,11 @@ export function DailyWithdrawProgress({
         </label>
         <div className="text-lg font-medium flex flex-row gap-2 items-center">
           <Hiddleble className="w-16 h-6 shadow-md">
-            <span> {toBrasilianReal(todayWithdraw!)} </span>
+            <span> {formatCurrency(todayWithdraw!)} </span>
           </Hiddleble>
           <span> / </span>
           <Hiddleble className="w-16 h-6 shadow-md">
-            <span> {toBrasilianReal(dailyWithdrawLimit!)} </span>
+            <span> {formatCurrency(dailyWithdrawLimit!)} </span>
           </Hiddleble>
         </div>
       </div>

@@ -6,8 +6,8 @@ import {
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
-// import { ArrowBendLeftDown, ArrowsLeftRight } from "@phosphor-icons/react";
-import { toBrasilianReal } from "@/lib/masks";
+// Step 1: Import the new 'formatCurrency' function instead of the old one.
+import { formatCurrency } from "@/lib/masks";
 import { Hiddleble } from "@/components/hiddeble";
 import { BalanceVisibilityToggle } from "@/modules/account/components/balance-visibility-toggle";
 import { DailyWithdrawProgress } from "@/modules/account/components/daily-withdraw-progress";
@@ -33,7 +33,8 @@ export function BalanceCard() {
       <CardContent className="w-full flex flex-col items-center gap-12">
         <Hiddleble className="w-48 h-12 shadow-lg">
           <span className="text-5xl font-bold">
-            {toBrasilianReal(account.balance)}
+            {/* Step 2: Use the new 'formatCurrency' function to display the balance. */}
+            {formatCurrency(account.balance)}
           </span>
         </Hiddleble>
         <DailyWithdrawProgress

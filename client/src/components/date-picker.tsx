@@ -1,8 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { format, addMinutes } from "date-fns";
+import { format } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
+import { enUS } from "date-fns/locale";
+import { Matcher, SelectSingleEventHandler } from "react-day-picker";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -20,34 +22,41 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ptBR } from "date-fns/locale";
-import { Matcher } from "react-day-picker";
 
 type DatePickerProps = {
-  date: string | Date;
+  date: string | Date | undefined;
   disableDays?: Matcher | Matcher[];
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onChange: (...event: any[]) => void;
+  onChange: SelectSingleEventHandler;
   disabled?: boolean;
 };
 
 function getLastHundredYears() {
   const lastHundredYears = [];
   const currentYear = new Date().getFullYear();
-
   for (let year = currentYear; year >= currentYear - 100; year--) {
     lastHundredYears.push(year);
   }
   return lastHundredYears;
 }
 
-function castDateToDisplay(dateToDisplay?: string | Date) {
-  if (dateToDisplay && typeof dateToDisplay == "string") {
-    const timezoneOffset = new Date().getTimezoneOffset();
-    return addMinutes(new Date(dateToDisplay), timezoneOffset);
-  } else if (dateToDisplay instanceof Date) {
-    return dateToDisplay;
+function parseSafeDate(dateValue: string | Date | undefined): Date | undefined {
+  if (!dateValue) {
+    return undefined;
   }
+  if (dateValue instanceof Date) {
+    return dateValue;
+  }
+  const parts = dateValue.split("-");
+  if (parts.length === 3) {
+    const year = parseInt(parts[0], 10);
+    const month = parseInt(parts[1], 10) - 1;
+    const day = parseInt(parts[2], 10);
+    if (!isNaN(year) && !isNaN(month) && !isNaN(day)) {
+      return new Date(year, month, day);
+    }
+  }
+  const parsedDate = new Date(dateValue);
+  return isNaN(parsedDate.getTime()) ? undefined : parsedDate;
 }
 
 export function DatePicker({
@@ -57,11 +66,9 @@ export function DatePicker({
   disabled = false,
 }: DatePickerProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const dateToDisplay = castDateToDisplay(date);
-  const [displayedMounth, setDisplayedMounth] = useState<Date>(
-    !dateToDisplay
-      ? new Date()
-      : new Date(dateToDisplay.getFullYear(), dateToDisplay.getMonth())
+  const dateToDisplay = parseSafeDate(date);
+  const [displayedMonth, setDisplayedMonth] = useState<Date>(
+    dateToDisplay || new Date()
   );
 
   return (
@@ -71,11 +78,11 @@ export function DatePicker({
           disabled={disabled}
           variant={"outline"}
           className={cn(
-            "justify-start text-left font-normal",
+            "justify-start text-left font-normal w-full", // Added w-full for better layout
             !dateToDisplay && "text-muted-foreground"
           )}
         >
-          <CalendarIcon />
+          <CalendarIcon className="mr-2 h-4 w-4" />
           {dateToDisplay ? (
             format(dateToDisplay, "dd/MM/yyyy")
           ) : (
@@ -85,20 +92,20 @@ export function DatePicker({
       </PopoverTrigger>
       <PopoverContent className="flex w-auto flex-col space-y-2 p-2">
         <Select
-          value={`${displayedMounth.getFullYear()}`}
-          onValueChange={(value: string) =>
-            setDisplayedMounth(
-              new Date(Number(value), displayedMounth.getMonth())
-            )
-          }
+          value={`${displayedMonth.getFullYear()}`}
+          onValueChange={(value: string) => {
+            const newMonth = new Date(displayedMonth);
+            newMonth.setFullYear(parseInt(value, 10));
+            setDisplayedMonth(newMonth);
+          }}
         >
-          <SelectTrigger className="w-full hover:co">
-            <SelectValue />
+          <SelectTrigger>
+            <SelectValue placeholder="Select year" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent position="popper">
             <SelectGroup>
-              {getLastHundredYears().map((year, index) => (
-                <SelectItem key={index} value={`${year}`}>
+              {getLastHundredYears().map((year) => (
+                <SelectItem key={year} value={`${year}`}>
                   {year}
                 </SelectItem>
               ))}
@@ -108,16 +115,26 @@ export function DatePicker({
         <div className="rounded-md border">
           <Calendar
             mode="single"
-            locale={ptBR}
+            locale={enUS}
             selected={dateToDisplay}
-            onSelect={(event) => {
-              onChange(event);
-              setIsOpen(false);
+            // --- THIS IS THE FINAL FIX ---
+            // When a date is selected, we adjust it for the browser's timezone offset.
+            // This prevents the date from shifting to the previous day when it's
+            // converted to a string (like toISOString) by the form library.
+            onSelect={(selectedDate, ...rest) => {
+              if (selectedDate) {
+                const timezoneOffset = selectedDate.getTimezoneOffset();
+                const adjustedDate = new Date(selectedDate.getTime() - (timezoneOffset * 60000));
+                onChange(adjustedDate, ...rest);
+                setIsOpen(false);
+              } else {
+                onChange(undefined, ...rest);
+              }
             }}
             disabled={disableDays}
             initialFocus
-            month={displayedMounth}
-            onMonthChange={(mounth) => setDisplayedMounth(mounth)}
+            month={displayedMonth}
+            onMonthChange={setDisplayedMonth}
           />
         </div>
       </PopoverContent>

@@ -60,17 +60,10 @@ export function WithdrawForm() {
                 <FormItem>
                   <FormLabel> Amount </FormLabel>
                   <FormControl>
-                    <MoneyInput
-                      value={field.value}
-                      onChange={(e) => {
-                        const cleanedValue = e.target.value
-                          .slice(3)
-                          .replaceAll(".", "")
-                          .replaceAll(",", ".");
-
-                        field.onChange(Number(cleanedValue));
-                      }}
-                    />
+                    {/* --- THIS IS THE FIX --- */}
+                    {/* Just like with the deposit form, we pass the 'field' props directly. */}
+                    {/* The MoneyInput component now handles all the logic, so this form dont need to. */}
+                    <MoneyInput {...field} />
                   </FormControl>
                   <FormDescription>Amount you wish to withdraw.</FormDescription>
                   <FormMessage />

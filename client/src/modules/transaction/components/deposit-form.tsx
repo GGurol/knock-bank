@@ -60,17 +60,11 @@ export function DepositForm() {
                 <FormItem>
                   <FormLabel> Amount </FormLabel>
                   <FormControl>
-                    <MoneyInput
-                      value={field.value}
-                      onChange={(e) => {
-                        const cleanedValue = e.target.value
-                          .slice(3)
-                          .replaceAll(".", "")
-                          .replaceAll(",", ".");
-
-                        field.onChange(Number(cleanedValue));
-                      }}
-                    />
+                    {/* --- THIS IS THE FIX --- */}
+                    {/* We now pass the 'field' object directly to MoneyInput. */}
+                    {/* All the complex conversion logic is now handled inside MoneyInput. */}
+                    {/* This is much cleaner and more reusable. */}
+                    <MoneyInput {...field} />
                   </FormControl>
                   <FormDescription>Amount you wish to deposit.</FormDescription>
                   <FormMessage />

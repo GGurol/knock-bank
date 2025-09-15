@@ -1,3 +1,5 @@
+// This file contains helper functions for formatting values.
+
 export function formatCpf(value: string, removeChars: boolean = true): string {
   if (removeChars) {
     value = value.replace(/\D/g, ""); // remove non-numeric characters
@@ -10,24 +12,15 @@ export function formatCpf(value: string, removeChars: boolean = true): string {
     .replace(/(-\d{2})\d+?$/, "$1");
 }
 
-export function toBrasilianReal(value?: number): string | undefined {
-  return value != undefined
-    ? value.toLocaleString("en-US", { // Changed locale from 'pt-BR' to 'en-US' for the dollar sign
-        style: "currency",
-        currency: "USD", // Changed currency from 'BRL' to 'USD'
-      })
-    : undefined;
-}
-
-export function formatBrasilianReal(value: string): string {
-  const money = Number(value.replace(/[^0-9]/g, "")) / 100;
-
-  if (isNaN(money)) {
+// --- THIS IS THE NEW, CORRECTED FUNCTION ---
+// It takes a number and formats it into a US Dollar currency string.
+// Example: 1234.5 -> "$1,234.50"
+export function formatCurrency(value: number | undefined | null): string {
+  if (value === undefined || value === null) {
     return "";
   }
-
-  return money.toLocaleString("en-US", { // Changed locale from 'pt-BR' to 'en-US'
+  return new Intl.NumberFormat("en-US", {
     style: "currency",
-    currency: "USD", // Changed currency from 'BRL' to 'USD'
-  });
+    currency: "USD",
+  }).format(value);
 }

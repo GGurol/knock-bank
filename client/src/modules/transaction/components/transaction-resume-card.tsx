@@ -1,7 +1,7 @@
 "use client";
 
 import { Bar, BarChart, XAxis } from "recharts";
-import { toBrasilianReal } from "@/lib/masks";
+import { formatCurrency } from "@/lib/masks";
 
 import {
   NameType,
@@ -118,7 +118,7 @@ function TooltipContent({ name, value }: TooltipContentProps) {
       />
       {chartConfig[name as keyof typeof chartConfig]?.label}
       <div className="ml-auto flex items-baseline gap-0.5 font-mono font-medium tabular-nums text-foreground">
-        {toBrasilianReal(Number(value.toString()))}
+        {formatCurrency(Number(value.toString()))}
       </div>
     </>
   );

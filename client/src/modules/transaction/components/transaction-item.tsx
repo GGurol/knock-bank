@@ -5,7 +5,7 @@ import {
   TransactionType,
 } from "@/modules/transaction/transaction.type";
 import { Hiddleble } from "@/components/hiddeble";
-import { toBrasilianReal } from "@/lib/masks";
+import { formatCurrency } from "@/lib/masks";
 
 type TransactionProps = {
   label: string;
@@ -92,7 +92,7 @@ export function TransactionItem({ transaction }: { transaction: Transaction }) {
         >
           <Hiddleble className="w-16 h-8 shadow-md">
             {transaction.money > 0 && "+"}
-            {toBrasilianReal(transaction.money)}
+            {formatCurrency(transaction.money)}
           </Hiddleble>
         </span>
       </li>

@@ -58,17 +58,9 @@ export function TransferenceForm() {
                 <FormItem>
                   <FormLabel> Amount </FormLabel>
                   <FormControl>
-                    <MoneyInput
-                      value={field.value}
-                      onChange={(e) => {
-                        const cleanedValue = e.target.value
-                          .slice(3)
-                          .replaceAll(".", "")
-                          .replaceAll(",", ".");
-
-                        field.onChange(Number(cleanedValue));
-                      }}
-                    />
+                    {/* --- THIS IS THE FIX --- */}
+                    {/* Just like with the other forms, we pass the 'field' props directly. */}
+                    <MoneyInput {...field} />
                   </FormControl>
                   <FormDescription>
                     Amount you wish to transfer.
