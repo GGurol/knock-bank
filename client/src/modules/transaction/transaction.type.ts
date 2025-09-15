@@ -2,9 +2,12 @@ import { z } from "zod";
 import { Person } from "@/modules/account/account.type";
 import { PaginationQuery } from "@/lib/pagination";
 
+// --- THIS IS THE CRITICAL FIX ---
+// By changing the enum to use string values, the frontend will now correctly
+// understand the data sent from the backend API (e.g., "DEPOSIT").
 export enum TransactionType {
-  DEPOSIT = 1,
-  WITHDRAW = 2,
+  DEPOSIT = "DEPOSIT",
+  WITHDRAW = "WITHDRAW",
 }
 
 export type Transaction = {

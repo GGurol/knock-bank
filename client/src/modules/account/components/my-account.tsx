@@ -204,7 +204,7 @@ export function MyAccount() {
                     className="flex gap-2"
                     onClick={handleBlockAccount}
                   >
-                    Bloquear
+                    Block
                     <Lock size={24} className="fill-white" />
                   </Button>
                   <Button

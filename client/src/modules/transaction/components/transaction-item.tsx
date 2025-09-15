@@ -12,7 +12,7 @@ type TransactionProps = {
   color: string;
 };
 
-// This function now correctly uses the string-based Enum
+// This function correctly uses the string-based Enum
 function getTransactionProps(
   transactionType: TransactionType
 ): TransactionProps | undefined {
@@ -27,17 +27,15 @@ function getTransactionProps(
         label: "Withdraw",
         color: "destructive",
       };
-    // It's good practice to handle other cases, even if just to ignore them
     default:
       return undefined;
   }
 }
 
 export function TransactionItem({ transaction }: { transaction: Transaction }) {
-  // CORRECTED: We now safely handle the case where the transaction type is unknown
-  const props = getTransactionProps(transaction.transaction_type);
+  // Pass the correct camelCase property to the function
+  const props = getTransactionProps(transaction.transactionType);
 
-  // If the transaction type is not one we want to display, render nothing.
   if (!props) {
     return null;
   }
@@ -59,7 +57,8 @@ export function TransactionItem({ transaction }: { transaction: Transaction }) {
             <p className="text-lg font-bold"> {label} </p>
             <p>
               <span className="font-normal">
-                {new Date(transaction.date_time).toLocaleDateString("en-US", {
+                {/* Use the correct camelCase property for the date */}
+                {new Date(transaction.dateTime).toLocaleDateString("en-US", {
                   hour: "2-digit",
                   minute: "2-digit",
                 })}
