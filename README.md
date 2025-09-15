@@ -41,11 +41,17 @@ KnockBank is a modern full stack banking platform that allows its users to depos
 
 ### Build and run everything
 
-```git clone https://github.com/GGurol/knock-bank.git```
+```sh
+git clone https://github.com/GGurol/knock-bank.git
+```
 
-```cd knock-bank```
+```sh
+cd knock-bank
+```
 
-```docker-compose up --build -d```
+```sh
+docker-compose up --build -d
+```
 
 Access the frontend at http://localhost:3000
 
