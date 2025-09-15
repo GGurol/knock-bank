@@ -12,9 +12,7 @@ services:
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
     volumes:
       - mysql-db:/var/lib/mysql
-    # --- BU BÖLÜM ÇOK ÖNEMLİ ---
-    # Bu blok, periyodik olarak container içindeki MySQL sunucusunun
-    # bağlantı kabul etmeye hazır olup olmadığını kontrol eder.
+
     healthcheck:
       test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost", "-u", "${DB_USER}", "-p${DB_PASSWORD}"]
       interval: 10s
@@ -28,56 +26,35 @@ services:
     build: 
       context: ./server
     volumes:
-      - ./server/src:/app # Kodunuzu senkronize eder
-      # Önceki projede paketler için bir volume vardı, bu projede gerekmeyebilir.
-      # Eğer `pip freeze` yine boş dönerse bu satırı tekrar ekleriz:
-      # - packages:/usr/local/lib/python3.12/site-packages 
+      - ./server/src:/app
+
     environment:
       TOKEN_SECRET: ${JWT_SECRET}
       SHOW_SQL: 'false'
       SQLALCHEMY_DATABASE_URI: 'mysql+mysqlconnector://${DB_USER}:${DB_PASSWORD}@db:3306/${DB_NAME}'
-    # --- BU BÖLÜM DE ÇOK ÖNEMLİ ---
-    # Bu, 'api' servisine, 'db' servisinin sadece başlamasını değil,
-    # tamamen "sağlıklı" (healthy) olmasını beklemesini söyler.
+
     depends_on:
       db:
         condition: service_healthy
 
-# docker-compose.yml
-
   web:
     container_name: knockbank-web
-    build: 
-      context: ./client
-      # Tell Docker to use our new development-specific Dockerfile
-      dockerfile: Dockerfile.dev
-    
-    volumes:
-      # 1. Mount the local ./client directory to the /app directory in the container.
-      #    This is how hot-reloading sees your file changes.
-      - ./client:/app
-      
-      # 2. Prevent the local node_modules from overriding the container's. VERY IMPORTANT!
-      - /app/node_modules
-    
-    # 3. Explicitly tell the container to run the development server.
-    #    This overrides the CMD in the Dockerfile.
-    command: yarn run dev
-    
-    ports:
-      - "3000:3000"
-      
     environment:
-      # This helps the file watcher work correctly inside Docker
-      CHOKIDAR_USEPOLLING: 'true' 
       NEXT_PUBLIC_API_URL: 'http://localhost:8000/api'
       NEXT_PRIVATE_API_URL: 'http://api:8000/api'
       NEXTAUTH_URL: 'http://localhost:3000'
       NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
-      
+    ports:
+      - "3000:3000"
+    build: 
+      context: ./client
+      args:
+        NEXT_PUBLIC_API_URL: 'http://localhost:8000/api'
+        NEXT_PRIVATE_API_URL: 'http://api:8000/api'
+        NEXTAUTH_URL: 'http://localhost:3000'
+        NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
     depends_on:
       - api
 
 volumes:
   mysql-db:
-  # packages: # Eğer yukarıda packages volume'ünü kullanırsak bu satır kalmalı
