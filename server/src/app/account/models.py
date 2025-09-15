@@ -34,7 +34,6 @@ class Account(BaseModel):
     person_id: Mapped[int] = Column(Long, ForeignKey('person.id'), unique=True)
     person: Mapped['Person'] = relationship('Person', back_populates='account')
     
-    # CORRECTED: Explicitly tell SQLAlchemy which foreign key to use for each relationship
     transactions: Mapped[list['Transaction']] = relationship(
         'Transaction', 
         back_populates='account', 

@@ -12,8 +12,9 @@ type TransactionProps = {
   color: string;
 };
 
+// This function now correctly uses the string-based Enum
 function getTransactionProps(
-  transactionType: number
+  transactionType: TransactionType
 ): TransactionProps | undefined {
   switch (transactionType) {
     case TransactionType.DEPOSIT:
@@ -21,17 +22,27 @@ function getTransactionProps(
         label: "Deposit",
         color: "success",
       };
-
     case TransactionType.WITHDRAW:
       return {
         label: "Withdraw",
         color: "destructive",
       };
+    // It's good practice to handle other cases, even if just to ignore them
+    default:
+      return undefined;
   }
 }
 
 export function TransactionItem({ transaction }: { transaction: Transaction }) {
-  const { label, color } = getTransactionProps(transaction.transactionType)!;
+  // CORRECTED: We now safely handle the case where the transaction type is unknown
+  const props = getTransactionProps(transaction.transaction_type);
+
+  // If the transaction type is not one we want to display, render nothing.
+  if (!props) {
+    return null;
+  }
+  
+  const { label, color } = props;
 
   return (
     <>
@@ -41,14 +52,14 @@ export function TransactionItem({ transaction }: { transaction: Transaction }) {
           <div
             className={
               "w-2 rounded-md " +
-              (color == "success" ? "bg-success" : "bg-destructive")
+              (color === "success" ? "bg-success" : "bg-destructive")
             }
           ></div>
           <div>
             <p className="text-lg font-bold"> {label} </p>
             <p>
-              <span className="text- font-normal">
-                {new Date(transaction.dateTime).toLocaleDateString("en-US", {
+              <span className="font-normal">
+                {new Date(transaction.date_time).toLocaleDateString("en-US", {
                   hour: "2-digit",
                   minute: "2-digit",
                 })}
@@ -63,7 +74,7 @@ export function TransactionItem({ transaction }: { transaction: Transaction }) {
         <span
           className={
             "text-lg font-semibold " +
-            (color == "success" ? "text-success" : "text-destructive")
+            (color === "success" ? "text-success" : "text-destructive")
           }
         >
           <Hiddleble className="w-16 h-8 shadow-md">

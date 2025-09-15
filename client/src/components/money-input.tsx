@@ -8,7 +8,7 @@ export const MoneyInput = forwardRef<HTMLInputElement, ComponentProps<"input">>(
     return (
       <Input
         type="text"
-        placeholder="R$ 10,00"
+        placeholder="$ 10,00"
         ref={ref}
         value={formatBrasilianReal(toBrasilianReal((value as number) ?? 0)!)}
         onChange={(event) => {
