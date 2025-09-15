@@ -12,7 +12,7 @@ type TransactionProps = {
   color: string;
 };
 
-// This function correctly uses the string-based Enum
+// This function now correctly uses the string-based Enum
 function getTransactionProps(
   transactionType: TransactionType
 ): TransactionProps | undefined {
@@ -32,8 +32,24 @@ function getTransactionProps(
   }
 }
 
+// --- THIS IS THE NEW HELPER FUNCTION ---
+// It takes an ISO date string and formats it to 'dd/mm/YYYY HH:MM'.
+// This gives us precise control over the output.
+function formatDateTime(isoString: string): string {
+  const date = new Date(isoString);
+  
+  // Get components and pad with zero if needed
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+  const year = date.getFullYear();
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+
+  return `${day}/${month}/${year} ${hours}:${minutes}`;
+}
+
+
 export function TransactionItem({ transaction }: { transaction: Transaction }) {
-  // Pass the correct camelCase property to the function
   const props = getTransactionProps(transaction.transactionType);
 
   if (!props) {
@@ -57,11 +73,9 @@ export function TransactionItem({ transaction }: { transaction: Transaction }) {
             <p className="text-lg font-bold"> {label} </p>
             <p>
               <span className="font-normal">
-                {/* Use the correct camelCase property for the date */}
-                {new Date(transaction.dateTime).toLocaleDateString("en-US", {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}
+                {/* --- THIS IS THE CHANGE --- */}
+                {/* We now call our new helper function to format the date */}
+                {formatDateTime(transaction.dateTime)}
               </span>
               <span className="font-semibold">
                 {transaction.originAccount &&

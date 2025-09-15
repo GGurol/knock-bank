@@ -28,14 +28,9 @@ class AccountService:
     ) -> PaginationResponse[AccountOut]:
         accounts, total = self.account_repository.get_all(filter, account_id)
         
-        # --- THIS IS THE FIX ---
-        # We removed the manual list comprehension that was calling '.to_json()'.
-        # Now, we return the list of SQLAlchemy 'Account' objects directly.
-        # FastAPI and Pydantic will handle the conversion to the 'AccountOut' schema
-        # automatically because of the response_model in the router.
-        
+        # Pydantic will handle the conversion automatically via the response_model in the router
         return PaginationResponse(
-            data=accounts, # The list of raw Account objects is passed here
+            data=accounts,
             total=total,
             pageIndex=filter.pageIndex,
             pageSize=filter.pageSize,
@@ -48,23 +43,18 @@ class AccountService:
             raise AccountNotFound()
         return account
 
-    # --- CORRECTED CREATE FUNCTION ---
     def create(self, account_in: AccountIn):
-        # 1. Check the person's age
         person_age = (date.today() - account_in.birthDate).days // 365
         if person_age < 18:
             raise AccountOwnerIsMinor()
 
-        # 2. Check if a person with this CPF already exists
         if self.person_repository.get_by_cpf(account_in.cpf):
             raise AccountAlreadyExistsWithThisCPF()
 
-        # 3. Hash the password and create a new User
         hashed_password = hash_password(account_in.password)
         user_to_create = User(password=hashed_password)
         created_user = self.user_repository.save(user_to_create)
 
-        # 4. Create a new Person and link it to the User
         person_to_create = Person(
             name=account_in.name,
             cpf=account_in.cpf,
@@ -73,20 +63,20 @@ class AccountService:
         )
         created_person = self.person_repository.save(person_to_create)
         
-        # 5. Create a new Account and link it to the Person
         account_to_create = Account(
             accountType=account_in.accountType,
             dailyWithdrawLimit=account_in.dailyWithdrawLimit,
             person_id=created_person.id
         )
         
-        # 6. Save and return the new Account
         return self.account_repository.save(account_to_create)
 
     def update(self, account_id: int, update_account_in: UpdateAccountIn, user_id: int):
         account: Account = self.get_by_id(account_id)
 
-        if account.user.id != user_id:
+        # --- THIS IS THE FIX ---
+        # The correct path to the user ID is through the 'person' relationship.
+        if account.person.user.id != user_id:
             raise CantUpdateAccount()
 
         today_total_withdraw = float(
@@ -96,15 +86,24 @@ class AccountService:
         if update_account_in.dailyWithdrawLimit < float(today_total_withdraw):
             raise CantUpdateDailyWithdrawLimit()
 
-        account.update(update_account_in)
+        # The 'update' method on the model needs to be defined in models.py
+        # Assuming it exists and works like: account.person.name = ...
+        person = account.person
+        person.name = update_account_in.name
+        person.birthDate = update_account_in.birthDate
+        account.accountType = update_account_in.accountType
+        account.dailyWithdrawLimit = update_account_in.dailyWithdrawLimit
+        
         return self.account_repository.save(account)
 
     def deactivate(self, account_id: int, user_id: int):
         account: Account = self.account_repository.get_by_id(account_id)
 
-        if account.user.id != user_id:
+        # --- THIS IS ALSO FIXED ---
+        # The correct path to the user object is through 'person'.
+        if account.person.user.id != user_id:
             raise CantBlockAccount()
 
-        account.fl_active = False
-        account.user.token = None
+        account.flActive = False
+        account.person.user.token = None # Access the token via the correct path
         self.account_repository.save(account)

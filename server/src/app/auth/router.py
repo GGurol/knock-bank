@@ -13,9 +13,9 @@ def login(
     token_in: TokenIn, auth_service: AuthService = Depends(AuthService)
 ) -> TokenOut:
     """
-    Endpoint para realização do login.\n
-    Recebe o cpf do dono da conta e a senha de acesso.\n
-    Retorna o token JWT.
+    Endpoint to perform the login.
+    Receives the account owner's cpf and the access password.
+    Returns the JWT token.
     """
     token: str = auth_service.login(token_in)
     return TokenOut(accessToken=token)
@@ -27,11 +27,14 @@ def logout(
     auth_service: AuthService = Depends(AuthService),
 ):
     """
-    Endpoint para deslogar o usuário.\n
-    Remove o token JWT do banco de dados
+    Endpoint for logging out the user.
+    It removes the JWT token from database.
     """
     auth_service.logout(user)
+    
+    # --- THIS IS THE FIX ---
+    # The correct path to the person's name is directly through user.person.name
     return {
-        'message': 'Conta desconectada com sucesso.',
-        'detail': {'user': {'id': user.id, 'nome': user.account.person.name}},
+        'message': 'Account logged out successfully.',
+        'detail': {'user': {'id': user.id, 'name': user.person.name}},
     }

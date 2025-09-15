@@ -190,7 +190,7 @@ export function MyAccount() {
                     disabled={isUpdatePending}
                     className="w-full max-w-52"
                   >
-                    Salvar{" "}
+                    Update{" "}
                     {isUpdatePending && (
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     )}

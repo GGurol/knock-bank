@@ -1,6 +1,6 @@
 export function formatCpf(value: string, removeChars: boolean = true): string {
   if (removeChars) {
-    value = value.replace(/\D/g, ""); // remove caracteres não numéricos
+    value = value.replace(/\D/g, ""); // remove non-numeric characters
   }
 
   return value
@@ -12,9 +12,9 @@ export function formatCpf(value: string, removeChars: boolean = true): string {
 
 export function toBrasilianReal(value?: number): string | undefined {
   return value != undefined
-    ? value.toLocaleString("pt-BR", {
+    ? value.toLocaleString("en-US", { // Changed locale from 'pt-BR' to 'en-US' for the dollar sign
         style: "currency",
-        currency: "BRL",
+        currency: "USD", // Changed currency from 'BRL' to 'USD'
       })
     : undefined;
 }
@@ -26,8 +26,8 @@ export function formatBrasilianReal(value: string): string {
     return "";
   }
 
-  return money.toLocaleString("pt-BR", {
+  return money.toLocaleString("en-US", { // Changed locale from 'pt-BR' to 'en-US'
     style: "currency",
-    currency: "BRL",
+    currency: "USD", // Changed currency from 'BRL' to 'USD'
   });
 }
